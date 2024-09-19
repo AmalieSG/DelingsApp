@@ -16,7 +16,7 @@ import com.example.myapplication.viewmodel.UserViewModel
 fun AppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    userViewModel: UserViewModel = viewModel()  // Legg til UserViewModel her.
+    userViewModel: UserViewModel = viewModel()
 ) {
     NavHost(
         navController = navController,

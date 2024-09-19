@@ -25,7 +25,6 @@ fun ProfileScreen(navController: NavController, username: String) {
 
         Button(
             onClick = {
-                // Logg ut brukeren, naviger tilbake til login
                 navController.navigate("login")
             },
             modifier = Modifier.fillMaxWidth()

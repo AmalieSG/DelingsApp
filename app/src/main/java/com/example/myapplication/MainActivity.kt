@@ -28,7 +28,6 @@ fun MyApp() {
 
     Scaffold(
         content = { padding ->
-            // Bruk padding i AppNavHost
             AppNavHost(
                 navController = navController,
                 modifier = Modifier.padding(padding)

@@ -47,12 +47,9 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel = vie
 
         Button(
             onClick = {
-                // Verifiser legitimasjonen ved å bruke UserViewModel
                 if (userViewModel.login(username, password)) {
-                    // Naviger til ProfileScreen hvis innloggingen er vellykket
                     navController.navigate("profile/$username")
                 } else {
-                    // Vis en feilmelding hvis innloggingen mislykkes
                     errorMessage = "Invalid username or password"
                 }
             },
@@ -64,7 +61,6 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel = vie
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                // Naviger til registreringssiden hvis brukeren ikke har en konto
                 navController.navigate("register")
             },
             modifier = Modifier.fillMaxWidth()

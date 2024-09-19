@@ -60,9 +60,7 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel = 
         Button(
             onClick = {
                 if (password == confirmPassword) {
-                    // Lagre brukernavn og passord i ViewModel
                     userViewModel.registerUser(username, password)
-                    // Naviger til login-skjermen
                     navController.navigate("login")
                 } else {
                     // Håndter mismatch i passord
