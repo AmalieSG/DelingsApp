@@ -12,10 +12,10 @@ import androidx.navigation.NavController
 import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
-fun RegisterScreen(navController: NavController, userViewModel: UserViewModel = viewModel()) {
+fun LoginScreen(navController: NavController, userViewModel: UserViewModel = viewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }  // Variabel for å vise feil
 
     Column(
         modifier = Modifier
@@ -24,19 +24,13 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel = 
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Register", style = MaterialTheme.typography.headlineMedium)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         TextField(
             value = username,
             onValueChange = { username = it },
             label = { Text("Username") },
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(16.dp))
-
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -44,33 +38,38 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel = 
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("Confirm Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
+        if (errorMessage.isNotEmpty()) {
+            Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         Button(
             onClick = {
-                if (password == confirmPassword) {
-                    // Lagre brukernavn og passord i ViewModel
-                    userViewModel.registerUser(username, password)
-                    // Naviger til login-skjermen
-                    navController.navigate("login")
+                // Verifiser legitimasjonen ved å bruke UserViewModel
+                if (userViewModel.login(username, password)) {
+                    // Naviger til ProfileScreen hvis innloggingen er vellykket
+                    navController.navigate("profile/$username")
                 } else {
-                    // Håndter mismatch i passord
+                    // Vis en feilmelding hvis innloggingen mislykkes
+                    errorMessage = "Invalid username or password"
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Register")
+            Text("Login")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = {
+                // Naviger til registreringssiden hvis brukeren ikke har en konto
+                navController.navigate("register")
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Go to Register")
         }
     }
 }

@@ -5,23 +5,30 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.myapplication.HomeScreen
-import com.example.myapplication.LoginScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.ui.screens.LoginScreen
 import com.example.myapplication.ui.screens.RegisterScreen
+import com.example.myapplication.ui.screens.ProfileScreen
+import com.example.myapplication.HomeScreen
+import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
 fun AppNavHost(
-    navController: NavHostController,  // Bruker NavController fra navigasjon
-    modifier: Modifier = Modifier       // Tar en Modifier som parameter med en default-verdi
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    userViewModel: UserViewModel = viewModel()  // Legg til UserViewModel her
 ) {
-    // Selve NavHost som håndterer navigasjonen mellom forskjellige skjermbilder
     NavHost(
         navController = navController,
-        startDestination = "home",      // Start-skjermen er "home"
-        modifier = modifier             // Bruker modifier her for å håndtere padding
+        startDestination = "home",
+        modifier = modifier
     ) {
-        composable("home") { HomeScreen(navController) }  // Naviger til HomeScreen
-        composable("login") { LoginScreen(navController) }  // Naviger til LoginScreen
-        composable("register") { RegisterScreen(navController) }  // Naviger til LoginScreen
+        composable("home") { HomeScreen(navController) }
+        composable("login") { LoginScreen(navController, userViewModel) }
+        composable("register") { RegisterScreen(navController, userViewModel) }
+        composable("profile/{username}") { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username") ?: ""
+            ProfileScreen(navController = navController, username = username)
+        }
     }
 }
