@@ -7,15 +7,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
-fun RegisterScreen(navController: NavController, userViewModel: UserViewModel = viewModel()) {
+fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -24,19 +24,13 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel = 
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Register", style = MaterialTheme.typography.headlineMedium)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         TextField(
             value = username,
             onValueChange = { username = it },
             label = { Text("Username") },
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(16.dp))
-
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -44,9 +38,7 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel = 
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(16.dp))
-
         TextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
@@ -54,16 +46,24 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel = 
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
-
         Spacer(modifier = Modifier.height(16.dp))
+
+        if (errorMessage.isNotEmpty()) {
+            Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         Button(
             onClick = {
-                if (password == confirmPassword) {
-                    userViewModel.registerUser(username, password)
-                    navController.navigate("login")
+                errorMessage = ""
+
+                if (password != confirmPassword) {
+                    errorMessage = "Passwords do not match"
+                } else if (userViewModel.registerUser(username, password)) {
+                    // Naviger til login-skjermen med en melding om suksess
+                    navController.navigate("login?message=Brukerregistrering vellykket")
                 } else {
-                    // Håndter mismatch i passord
+                    errorMessage = "Username already exists"
                 }
             },
             modifier = Modifier.fillMaxWidth()

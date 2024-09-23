@@ -5,30 +5,35 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.ui.screens.HomePage
 import com.example.myapplication.ui.screens.LoginScreen
-import com.example.myapplication.ui.screens.RegisterScreen
 import com.example.myapplication.ui.screens.ProfileScreen
-import com.example.myapplication.HomeScreen
+import com.example.myapplication.ui.screens.RegisterScreen
 import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    modifier: Modifier = Modifier,
-    userViewModel: UserViewModel = viewModel()
+    userViewModel: UserViewModel,
+    modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,
-        startDestination = "home",
+        startDestination = "login",
         modifier = modifier
     ) {
-        composable("home") { HomeScreen(navController) }
-        composable("login") { LoginScreen(navController, userViewModel) }
-        composable("register") { RegisterScreen(navController, userViewModel) }
+        composable("login") {
+            LoginScreen(navController, userViewModel)
+        }
+        composable("register") {
+            RegisterScreen(navController, userViewModel)
+        }
         composable("profile/{username}") { backStackEntry ->
-            val username = backStackEntry.arguments?.getString("username") ?: ""
-            ProfileScreen(navController = navController, username = username)
+            val username = backStackEntry.arguments?.getString("username")
+            ProfileScreen(username, userViewModel, navController)
+        }
+        composable("home") {
+            HomePage()  // Viser forsiden når brukeren navigerer hit
         }
     }
 }

@@ -5,17 +5,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavBackStackEntry
 import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
-fun LoginScreen(navController: NavController, userViewModel: UserViewModel = viewModel()) {
+fun LoginScreen(navController: NavController, userViewModel: UserViewModel, backStackEntry: NavBackStackEntry? = null) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }  // Variabel for å vise feil
+    var errorMessage by remember { mutableStateOf("") }
+    val successMessage = backStackEntry?.arguments?.getString("message")  // Hent meldingen
 
     Column(
         modifier = Modifier
@@ -24,6 +26,14 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel = vie
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        if (!successMessage.isNullOrEmpty()) {
+            Text(
+                text = successMessage,
+                color = Color.Green,  // Viser suksessmeldingen i grønn farge
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
+
         TextField(
             value = username,
             onValueChange = { username = it },
