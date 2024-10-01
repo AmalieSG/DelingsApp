@@ -3,7 +3,6 @@ package com.example.myapplication.viewmodel
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
@@ -15,8 +14,8 @@ data class User(
 )
 
 class UserViewModel : ViewModel() {
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val db: FirebaseFirestore = Firebase.firestore
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance() // Firebase Authentication
+    private val db: FirebaseFirestore = Firebase.firestore     // Firestore Database
 
     // Funksjon for å logge inn bruker med callback
     fun login(username: String, password: String, callback: (Boolean, String?) -> Unit) {
@@ -35,19 +34,26 @@ class UserViewModel : ViewModel() {
         auth.createUserWithEmailAndPassword(username, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Hvis registreringen er vellykket, lagrer vi brukerdata i Firestore
-                    val newUser = User(username = username, rating = 0f)  // Standard rating på 0f
-                    db.collection("users").document(auth.currentUser?.uid ?: "")
-                        .set(newUser)
-                        .addOnCompleteListener { firestoreTask ->
-                            if (firestoreTask.isSuccessful) {
-                                // Brukerdata lagret vellykket i Firestore
-                                callback(true, null)
-                            } else {
-                                // Feil ved lagring i Firestore
-                                callback(false, firestoreTask.exception?.message)
+                    // Hvis registreringen er vellykket, lagre brukerdata i Firestore
+                    val newUser = User(username = username, rating = 0f)  // Standard rating
+                    val userId = auth.currentUser?.uid // Hent UID-en til den registrerte brukeren
+
+                    if (userId != null) {
+                        db.collection("users").document(userId)
+                            .set(newUser)
+                            .addOnCompleteListener { firestoreTask ->
+                                if (firestoreTask.isSuccessful) {
+                                    // Brukerdata lagret vellykket i Firestore
+                                    callback(true, null)
+                                } else {
+                                    // Feil ved lagring i Firestore
+                                    callback(false, firestoreTask.exception?.message)
+                                }
                             }
-                        }
+                    } else {
+                        // Feil hvis UID ikke kunne hentes (skulle egentlig ikke skje)
+                        callback(false, "Unable to get user ID")
+                    }
                 } else {
                     // Registreringen feilet, returner feilmelding
                     callback(false, task.exception?.message)
@@ -62,7 +68,7 @@ class UserViewModel : ViewModel() {
             val snapshot = db.collection("users").whereEqualTo("username", username).get().await()
             if (snapshot.documents.isNotEmpty()) {
                 // Konverter Firestore-dokumentet til User-objekt
-                snapshot.documents[0].toObject<User>()
+                snapshot.documents[0].toObject(User::class.java)
             } else {
                 null // Ingen bruker funnet
             }
@@ -70,4 +76,7 @@ class UserViewModel : ViewModel() {
             null // Returner null hvis det oppstår en feil
         }
     }
+
+    val currentUserId: String?
+        get() = auth.currentUser?.uid  // Hent den nåværende brukerens UID fra FirebaseAuth
 }
