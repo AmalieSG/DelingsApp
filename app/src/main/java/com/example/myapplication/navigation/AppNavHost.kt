@@ -1,5 +1,7 @@
 package com.example.myapplication.navigation
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -25,24 +27,30 @@ fun AppNavHost(
         ScreenRoutes.Profile,
         ScreenRoutes.Register
     )
-    NavHost(
-        navController = navController,
-        startDestination = "login",
-        modifier = modifier
-    ) {
-        composable(ScreenRoutes.Login.route) {
-            LoginScreen(navController, userViewModel)
+
+    Scaffold(
+        bottomBar = {
+            NavBar(navController = navController, items = bottomNavItems)
         }
-        composable(ScreenRoutes.Register.route) {
-            RegisterScreen(navController, userViewModel)
-        }
-        composable(ScreenRoutes.Profile.route) { backStackEntry ->
-            val username = backStackEntry.arguments?.getString("username")
-            ProfileScreen(username, userViewModel, navController)
-        }
-        composable(ScreenRoutes.Home.route) {
-            HomePage()  // Viser forsiden når brukeren navigerer hit
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = "login",
+            modifier = modifier.padding(innerPadding)
+        ) {
+            composable(ScreenRoutes.Login.route) {
+                LoginScreen(navController, userViewModel)
+            }
+            composable(ScreenRoutes.Register.route) {
+                RegisterScreen(navController, userViewModel)
+            }
+            composable(ScreenRoutes.Profile.route) { backStackEntry ->
+                val username = backStackEntry.arguments?.getString("username")
+                ProfileScreen(username, userViewModel, navController)
+            }
+            composable(ScreenRoutes.Home.route) {
+                HomePage()
+            }
         }
     }
-    NavBar(navController = navController, items = bottomNavItems)
 }
