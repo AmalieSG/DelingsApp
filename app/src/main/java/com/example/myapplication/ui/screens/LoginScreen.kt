@@ -9,15 +9,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavBackStackEntry
 import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
-fun LoginScreen(navController: NavController, userViewModel: UserViewModel, backStackEntry: NavBackStackEntry? = null) {
+fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
-    val successMessage = backStackEntry?.arguments?.getString("message")  // Hent meldingen
 
     Column(
         modifier = Modifier
@@ -26,14 +24,7 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, back
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (!successMessage.isNullOrEmpty()) {
-            Text(
-                text = successMessage,
-                color = Color.Green,  // Viser suksessmeldingen i grønn farge
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-        }
-
+        // Inndatafelt for brukernavn
         TextField(
             value = username,
             onValueChange = { username = it },
@@ -41,6 +32,8 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, back
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Inndatafelt for passord
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -50,17 +43,23 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, back
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Viser feilmelding hvis noe går galt
         if (errorMessage.isNotEmpty()) {
-            Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
-            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = errorMessage, color = Color.Red)
         }
 
+        // Login-knapp
         Button(
             onClick = {
-                if (userViewModel.login(username, password)) {
-                    navController.navigate("profile/$username")
-                } else {
-                    errorMessage = "Invalid username or password"
+                // Kall login-metoden i UserViewModel, som bruker Firebase Authentication
+                userViewModel.login(username, password) { success, error ->
+                    if (success) {
+                        // Naviger til startsiden etter vellykket innlogging
+                        navController.navigate("profile/$username")
+                    } else {
+                        // Viser feilmelding hvis innloggingen mislyktes
+                        errorMessage = error ?: "Unknown error occurred"
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -69,13 +68,13 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel, back
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Registreringsknapp
         Button(
-            onClick = {
-                navController.navigate("register")
-            },
+            onClick = { navController.navigate("register") },  // Naviger til registreringsskjermen
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Go to Register")
+            Text("Register")
         }
     }
 }

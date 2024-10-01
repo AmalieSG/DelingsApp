@@ -7,7 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,10 +16,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController: NavController) {
-    val user = userViewModel.getUserByUsername(username)
+    var user by remember { mutableStateOf<com.example.myapplication.viewmodel.User?>(null) }
+    var errorMessage by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(username) {
+        if (username != null) {
+            coroutineScope.launch {
+                val result = userViewModel.getUserByUsername(username)
+                if (result != null) {
+                    user = result
+                } else {
+                    errorMessage = "Bruker ikke funnet"
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -33,15 +49,14 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
             Icon(
                 imageVector = Icons.Default.AccountCircle,
                 contentDescription = "Profile Picture",
-                modifier = Modifier
-                    .size(80.dp)
+                modifier = Modifier.size(80.dp)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             // Navn og rating
             Text(
-                text = user.username,  // Brukerens navn
+                text = user!!.username,  // Brukerens navn
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -64,7 +79,6 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Knappene i profilen
             ProfileButton(text = "Rediger profil", onClick = { /* Handle profile edit */ })
             Spacer(modifier = Modifier.height(16.dp))
             ProfileButton(text = "Mine annonser", onClick = { /* Handle ads */ })
@@ -75,10 +89,8 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Forside-knappen
             Button(
                 onClick = {
-                    // Naviger til forsiden
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }
                     }
@@ -103,9 +115,9 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
             ) {
                 Text("Logg ut", color = MaterialTheme.colorScheme.onError)
             }
-        } else {
+        } else if (errorMessage.isNotEmpty()) {
             // Hvis brukeren ikke finnes, vis feilmelding
-            Text(text = "Bruker ikke funnet", color = MaterialTheme.colorScheme.error)
+            Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
         }
     }
 }

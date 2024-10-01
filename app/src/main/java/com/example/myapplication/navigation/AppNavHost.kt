@@ -33,7 +33,7 @@ fun AppNavHost(
             ProfileScreen(username, userViewModel, navController)
         }
         composable("home") {
-            HomePage()  // Viser forsiden når brukeren navigerer hit
+            HomePage()
         }
     }
 }
