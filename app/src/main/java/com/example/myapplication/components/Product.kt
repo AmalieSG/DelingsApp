@@ -1,6 +1,8 @@
 package com.example.myapplication.components
 
 import android.net.Uri
+import androidx.compose.ui.tooling.preview.Preview
+
 
 class Product(
     private var _name: String,
