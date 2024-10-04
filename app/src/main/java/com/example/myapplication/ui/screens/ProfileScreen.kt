@@ -20,14 +20,21 @@ import com.example.myapplication.viewmodel.User
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProfileScreen(navController: NavController, userViewModel: UserViewModel) {
-    var user by remember { mutableStateOf<User?>(null) }
-    val scope = rememberCoroutineScope()
+fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController: NavController) {
+    var user by remember { mutableStateOf<com.example.myapplication.viewmodel.User?>(null) }
+    var errorMessage by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
 
-    // Hent brukerdata fra Firestore basert på UID til den innloggede brukeren
-    LaunchedEffect(Unit) {
-        userViewModel.getCurrentUser { fetchedUser ->
-            user = fetchedUser
+    LaunchedEffect(username) {
+        if (username != null) {
+            coroutineScope.launch {
+                val result = userViewModel.getUserByUsername(username)
+                if (result != null) {
+                    user = result
+                } else {
+                    errorMessage = "Bruker ikke funnet"
+                }
+            }
         }
     }
 
@@ -51,6 +58,7 @@ fun ProfileScreen(navController: NavController, userViewModel: UserViewModel) {
             // Navn og rating
             Text(
                 text = "Welcome, ${user?.username}",  // Viser brukernavnet fra Firestore
+                // TODO: FIX (fra server) text = user!!.username,  // Brukerens navn
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
