@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateListOf
 import com.example.myapplication.components.Product
 
 class ProductViewModel : ViewModel() {
-    var products = mutableStateListOf<Product>()
+    private val products = mutableStateListOf<Product>()
 
     fun addProduct(product: Product) {
         products.add(product)
