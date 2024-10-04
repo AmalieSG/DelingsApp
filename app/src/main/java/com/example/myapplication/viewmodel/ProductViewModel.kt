@@ -1,7 +1,5 @@
 package com.example.myapplication.viewmodel
 
-import android.net.Uri
-import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateListOf
 import com.example.myapplication.components.Product

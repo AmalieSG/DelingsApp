@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.navigation.AppNavHost
-import com.example.myapplication.navigation.ScreenRoutes
 import com.example.myapplication.viewmodel.UserViewModel
 
 class MainActivity : ComponentActivity() {

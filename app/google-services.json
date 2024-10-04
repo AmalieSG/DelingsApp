@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "882494401992",
+    "project_id": "delingsapp2",
+    "storage_bucket": "delingsapp2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882494401992:android:f480597ef32ba5f7cae4fd",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTHyDsxqUC9T1l6Ew0rYSHjmgWZ-Q0uSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

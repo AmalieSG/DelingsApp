@@ -1,20 +1,25 @@
 package com.example.myapplication.ui.screens
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import android.widget.Toast
+import androidx.compose.foundation.layout.*  // Pass på at dette er importert
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
 fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
+    val context = LocalContext.current
+
+    // States for brukerinput
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
     Column(
@@ -31,44 +36,41 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
+
         TextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        TextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("Confirm Password") },
-            visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         if (errorMessage.isNotEmpty()) {
-            Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
-            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = errorMessage, color = androidx.compose.ui.graphics.Color.Red)
         }
 
-        Button(
-            onClick = {
-                errorMessage = ""
-
-                if (password != confirmPassword) {
-                    errorMessage = "Passwords do not match"
-                } else if (userViewModel.registerUser(username, password)) {
-                    // Naviger til login-skjermen med en melding om suksess
-                    navController.navigate("login?message=Brukerregistrering vellykket")
+        // Knappeklikk for å registrere brukeren
+        Button(onClick = {
+            // Kall til register-metoden
+            userViewModel.register(username, password) { success, error ->
+                if (success) {
+                    Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
+                    navController.navigate("login?message=Registration successful")
                 } else {
-                    errorMessage = "Username already exists"
+                    errorMessage = error ?: "Registration failed"
                 }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
+            }
+        }) {
             Text("Register")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Go Back-knapp som navigerer tilbake til LoginScreen
+        Button(onClick = {
+            navController.popBackStack()  // Naviger tilbake til forrige skjerm
+        }) {
+            Text("Go Back")
         }
     }
 }

@@ -1,2 +1,0 @@
-# DelingsApp
- Mobilprogrammering2024
