@@ -1,7 +1,7 @@
 package com.example.myapplication.ui.screens
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.*  // Importer nødvendige Composables
+import androidx.compose.material3.*  // Importer Material3 for UI-komponenter
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,7 +13,7 @@ import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
 fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
-    var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
@@ -24,11 +24,11 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Inndatafelt for brukernavn
+        // Inndatafelt for e-post
         TextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("Username") },
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -52,10 +52,10 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
         Button(
             onClick = {
                 // Kall login-metoden i UserViewModel, som bruker Firebase Authentication
-                userViewModel.login(username, password) { success, error ->
+                userViewModel.login(email, password) { success: Boolean, error: String? ->
                     if (success) {
                         // Naviger til startsiden etter vellykket innlogging
-                        navController.navigate("profile/$username")
+                        navController.navigate("home")
                     } else {
                         // Viser feilmelding hvis innloggingen mislyktes
                         errorMessage = error ?: "Unknown error occurred"

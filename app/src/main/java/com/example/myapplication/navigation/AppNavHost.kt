@@ -7,7 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.myapplication.ui.screens.HomePage
 import com.example.myapplication.ui.screens.LoginScreen
+/*
 import com.example.myapplication.ui.screens.MessageScreen
+ */
 import com.example.myapplication.ui.screens.ProfileScreen
 import com.example.myapplication.ui.screens.RegisterScreen
 import com.example.myapplication.viewmodel.UserViewModel
@@ -33,10 +35,10 @@ fun AppNavHost(
             val username = backStackEntry.arguments?.getString("username")
             ProfileScreen(username, userViewModel, navController)
         }
-        composable("chat/{recipientUserId}") { backStackEntry ->
+        /*composable("chat/{recipientUserId}") { backStackEntry ->
             val recipientUserId = backStackEntry.arguments?.getString("recipientUserId") ?: ""
             MessageScreen(navController = navController, currentUserId = currentUserId, recipientUserId = recipientUserId)
-        }
+        }*/
         composable("home") {
             HomePage()
         }

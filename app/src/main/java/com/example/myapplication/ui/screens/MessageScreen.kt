@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens
+/*package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -207,3 +207,4 @@ fun getChatId(userId1: String, userId2: String): String {
 }
 
 
+*/
