@@ -1,7 +1,7 @@
 package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.*  // Importer nødvendige Composables
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -16,24 +16,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.viewmodel.UserViewModel
+import com.example.myapplication.viewmodel.User
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController: NavController) {
-    var user by remember { mutableStateOf<com.example.myapplication.viewmodel.User?>(null) }
-    var errorMessage by remember { mutableStateOf("") }
-    val coroutineScope = rememberCoroutineScope()
+fun ProfileScreen(navController: NavController, userViewModel: UserViewModel) {
+    var user by remember { mutableStateOf<User?>(null) }
+    val scope = rememberCoroutineScope()
 
-    LaunchedEffect(username) {
-        if (username != null) {
-            coroutineScope.launch {
-                val result = userViewModel.getUserByUsername(username)
-                if (result != null) {
-                    user = result
-                } else {
-                    errorMessage = "Bruker ikke funnet"
-                }
-            }
+    // Hent brukerdata fra Firestore basert på UID til den innloggede brukeren
+    LaunchedEffect(Unit) {
+        userViewModel.getCurrentUser { fetchedUser ->
+            user = fetchedUser
         }
     }
 
@@ -56,7 +50,7 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
 
             // Navn og rating
             Text(
-                text = user!!.username,  // Brukerens navn
+                text = "Welcome, ${user?.username}",  // Viser brukernavnet fra Firestore
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -64,9 +58,7 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
             Spacer(modifier = Modifier.height(4.dp))
 
             // Rating-seksjon med innebygd stjerneikon
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "Rating", fontSize = 16.sp)
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
@@ -79,6 +71,7 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            // Knappene i profilen
             ProfileButton(text = "Rediger profil", onClick = { /* Handle profile edit */ })
             Spacer(modifier = Modifier.height(16.dp))
             ProfileButton(text = "Mine annonser", onClick = { /* Handle ads */ })
@@ -89,16 +82,31 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            // Navigate to ProductsPage
             Button(
                 onClick = {
-                    navController.navigate("home") {
-                        popUpTo("home") { inclusive = true }
+                    navController.navigate("products") {
+                        popUpTo("products") { inclusive = true }
                     }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Forside", color = MaterialTheme.colorScheme.onPrimary)
+            }
+
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    navController.navigate("users") // Navigate to the list of users
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Messages", color = MaterialTheme.colorScheme.onPrimary)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -115,9 +123,9 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
             ) {
                 Text("Logg ut", color = MaterialTheme.colorScheme.onError)
             }
-        } else if (errorMessage.isNotEmpty()) {
+        } else {
             // Hvis brukeren ikke finnes, vis feilmelding
-            Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+            Text(text = "Brukerdata ikke funnet", color = MaterialTheme.colorScheme.error)
         }
     }
 }

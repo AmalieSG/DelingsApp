@@ -5,78 +5,89 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.tasks.await
+import com.google.firebase.auth.FirebaseAuthException
 
-// Brukerdata-modell (kan utvides med flere felt som rating, e-post osv.)
+// Brukerdata-modell
 data class User(
+    val userId: String = "", // Legg til userId her
     val username: String = "",
+    val phoneNumber: String = "",
+    val email: String = "",
     val rating: Float = 0f
 )
 
+
 class UserViewModel : ViewModel() {
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance() // Firebase Authentication
-    private val db: FirebaseFirestore = Firebase.firestore     // Firestore Database
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val db: FirebaseFirestore = Firebase.firestore
 
-    // Funksjon for å logge inn bruker med callback
-    fun login(username: String, password: String, callback: (Boolean, String?) -> Unit) {
-        auth.signInWithEmailAndPassword(username, password)
+    val currentUserId: String?
+        get() = auth.currentUser?.uid
+
+    // Funksjon for å registrere en ny bruker med e-post og passord
+    fun register(email: String, password: String, username: String, phoneNumber: String, callback: (Boolean, String?) -> Unit) {
+        auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    callback(true, null) // Login var vellykket
-                } else {
-                    callback(false, task.exception?.message) // Login feilet
-                }
-            }
-    }
+                    val userId = auth.currentUser?.uid
+                    val newUser = User(username = username, phoneNumber = phoneNumber, email = email)
 
-    // Funksjon for å registrere bruker med callback
-    fun register(username: String, password: String, callback: (Boolean, String?) -> Unit) {
-        auth.createUserWithEmailAndPassword(username, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Hvis registreringen er vellykket, lagre brukerdata i Firestore
-                    val newUser = User(username = username, rating = 0f)  // Standard rating
-                    val userId = auth.currentUser?.uid // Hent UID-en til den registrerte brukeren
-
+                    // Lagre brukerdata i Firestore
                     if (userId != null) {
-                        db.collection("users").document(userId)
-                            .set(newUser)
+                        db.collection("users").document(userId).set(newUser)
                             .addOnCompleteListener { firestoreTask ->
                                 if (firestoreTask.isSuccessful) {
-                                    // Brukerdata lagret vellykket i Firestore
                                     callback(true, null)
                                 } else {
-                                    // Feil ved lagring i Firestore
                                     callback(false, firestoreTask.exception?.message)
                                 }
                             }
                     } else {
-                        // Feil hvis UID ikke kunne hentes (skulle egentlig ikke skje)
-                        callback(false, "Unable to get user ID")
+                        callback(false, "User ID is null")
                     }
                 } else {
-                    // Registreringen feilet, returner feilmelding
                     callback(false, task.exception?.message)
                 }
             }
     }
 
-    // Funksjon for å hente brukerdata basert på brukernavn fra Firestore
-    suspend fun getUserByUsername(username: String): User? {
-        return try {
-            // Hent brukerdata fra Firestore basert på brukernavn
-            val snapshot = db.collection("users").whereEqualTo("username", username).get().await()
-            if (snapshot.documents.isNotEmpty()) {
-                // Konverter Firestore-dokumentet til User-objekt
-                snapshot.documents[0].toObject(User::class.java)
-            } else {
-                null // Ingen bruker funnet
+    // Funksjon for å logge inn bruker
+    fun login(email: String, password: String, callback: (Boolean, String?) -> Unit) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    callback(true, null)  // Login var vellykket
+                } else {
+                    // Sjekk for spesifikke Firebase-authentication-feilkoder
+                    val errorCode = (task.exception as? FirebaseAuthException)?.errorCode
+                    val errorMessage = when (errorCode) {
+                        // Fanger opp spesifikke feil for ugyldig e-post eller passord
+                        "ERROR_USER_NOT_FOUND", "ERROR_WRONG_PASSWORD", "ERROR_INVALID_EMAIL" -> {
+                            "Incorrect email or password"
+                        }
+                        else -> {
+                            "Wrong mail or password"
+                        }
+                    }
+                    callback(false, errorMessage)
+                }
             }
-        } catch (e: Exception) {
-            null // Returner null hvis det oppstår en feil
-        }
     }
 
-    val currentUserId: String?
-        get() = auth.currentUser?.uid  // Hent den nåværende brukerens UID fra FirebaseAuth
+    // Funksjon for å hente brukerdata basert på UID
+    fun getCurrentUser(callback: (User?) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            db.collection("users").document(userId).get()
+                .addOnSuccessListener { document ->
+                    val user = document.toObject(User::class.java)
+                    callback(user)
+                }
+                .addOnFailureListener {
+                    callback(null)
+                }
+        } else {
+            callback(null)
+        }
+    }
 }
