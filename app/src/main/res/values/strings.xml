@@ -1,6 +1,3 @@
 <resources>
-    <string name="app_name">DelingsApp</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_advertisement">advertisementActivity</string>
-    <string name="title_activity_delings_app">DelingsApp</string>
+    <string name="app_name">My Application</string>
 </resources>

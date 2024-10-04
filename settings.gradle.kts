@@ -19,5 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "DelingsApp"
+rootProject.name = "My Application"
 include(":app")
+ 
