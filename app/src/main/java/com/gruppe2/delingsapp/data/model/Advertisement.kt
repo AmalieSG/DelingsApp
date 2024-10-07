@@ -3,10 +3,9 @@ package com.gruppe2.delingsapp.data.model
 import android.icu.util.DateInterval
 import android.location.Geocoder
 import android.provider.MediaStore.Images
-import androidx.compose.runtime.Immutable
 import java.util.Locale.Category
 
-@Immutable
+
 data class Advertisement(
     val id: Long,
     val owner: Int, //TODO: knytte opp med UserID (asn)
