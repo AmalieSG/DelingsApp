@@ -38,6 +38,7 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
             }
     }
 
+
     Column(modifier = Modifier.fillMaxSize()) {
         // Message list
         LazyColumn(
@@ -143,7 +144,9 @@ fun sendMessage(db: FirebaseFirestore, chatId: String, senderId: String, message
     db.collection("chats").document(chatId).collection("messages").add(newMessage)
 }
 
+
 // Function to generate a unique ID for the chat between two users
 fun getChatId(userId1: String, userId2: String): String {
     return if (userId1 < userId2) "$userId1$userId2" else "$userId2$userId1"
 }
+

@@ -78,17 +78,25 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
                 if (isEmailMissing || isPasswordMissing) {
                     errorMessage = "Missing fields"
                 } else if (!emailPattern.matcher(email).matches()) {
-                    // Sjekk om e-posten har riktig format
                     errorMessage = "Email is badly formatted"
                 } else {
                     // Hvis e-postformatet er riktig, prøv å logge inn
                     userViewModel.login(email, password) { success, error ->
                         if (success) {
-                            navController.navigate("profile")  // Naviger til profilsiden etter vellykket innlogging
+                            userViewModel.getCurrentUser { user ->
+                                if (user != null) {
+                                    // Navigate to profile with username or user ID
+                                    navController.navigate("profile/${user.username}")
+                                } else {
+                                    errorMessage = "User data not found after login."
+                                }
+                            }
                         } else {
-                            errorMessage = error ?: "Wrong mail or password"
+                            errorMessage = error ?: "Login failed"
                         }
                     }
+
+
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -107,3 +115,4 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
         }
     }
 }
+

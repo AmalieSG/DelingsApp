@@ -9,13 +9,12 @@ import com.google.firebase.auth.FirebaseAuthException
 
 // Brukerdata-modell
 data class User(
-    val userId: String = "", // Legg til userId her
+    val userId: String = "",
     val username: String = "",
     val phoneNumber: String = "",
     val email: String = "",
     val rating: Float = 0f
 )
-
 
 class UserViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -32,7 +31,7 @@ class UserViewModel : ViewModel() {
                     val userId = auth.currentUser?.uid
                     val newUser = User(username = username, phoneNumber = phoneNumber, email = email)
 
-                    // Lagre brukerdata i Firestore
+                    // Store user data in Firestore
                     if (userId != null) {
                         db.collection("users").document(userId).set(newUser)
                             .addOnCompleteListener { firestoreTask ->
@@ -51,28 +50,25 @@ class UserViewModel : ViewModel() {
             }
     }
 
+
     // Funksjon for å logge inn bruker
     fun login(email: String, password: String, callback: (Boolean, String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    callback(true, null)  // Login var vellykket
+                    callback(true, null)  // Login was successful
                 } else {
-                    // Sjekk for spesifikke Firebase-authentication-feilkoder
                     val errorCode = (task.exception as? FirebaseAuthException)?.errorCode
                     val errorMessage = when (errorCode) {
-                        // Fanger opp spesifikke feil for ugyldig e-post eller passord
-                        "ERROR_USER_NOT_FOUND", "ERROR_WRONG_PASSWORD", "ERROR_INVALID_EMAIL" -> {
-                            "Incorrect email or password"
-                        }
-                        else -> {
-                            "Wrong mail or password"
-                        }
+                        "ERROR_USER_NOT_FOUND" -> "User not found"
+                        "ERROR_WRONG_PASSWORD" -> "Wrong password"
+                        else -> "Login failed"
                     }
                     callback(false, errorMessage)
                 }
             }
     }
+
 
     // Funksjon for å hente brukerdata basert på UID
     fun getCurrentUser(callback: (User?) -> Unit) {
@@ -84,10 +80,28 @@ class UserViewModel : ViewModel() {
                     callback(user)
                 }
                 .addOnFailureListener {
-                    callback(null)
+                    callback(null) // Handle error
                 }
         } else {
             callback(null)
         }
+    }
+
+    // Function to get user by username
+    fun getUserByUsername(username: String, callback: (User?) -> Unit) {
+        db.collection("users")
+            .whereEqualTo("username", username)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.documents.isNotEmpty()) {
+                    val user = documents.documents[0].toObject(User::class.java)
+                    callback(user)
+                } else {
+                    callback(null) // User not found
+                }
+            }
+            .addOnFailureListener {
+                callback(null) // Handle error
+            }
     }
 }

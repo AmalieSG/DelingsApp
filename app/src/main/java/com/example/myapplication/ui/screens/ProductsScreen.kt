@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens
+/*package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -138,3 +138,4 @@ fun RecommendationRow() {
         }
     }
 }
+*/

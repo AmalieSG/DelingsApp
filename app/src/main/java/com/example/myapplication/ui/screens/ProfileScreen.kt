@@ -21,18 +21,19 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController: NavController) {
-    var user by remember { mutableStateOf<com.example.myapplication.viewmodel.User?>(null) }
+    var user by remember { mutableStateOf<User?>(null) }
     var errorMessage by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(username) {
         if (username != null) {
             coroutineScope.launch {
-                val result = userViewModel.getUserByUsername(username)
-                if (result != null) {
-                    user = result
-                } else {
-                    errorMessage = "Bruker ikke funnet"
+                userViewModel.getUserByUsername(username) { result ->
+                    if (result != null) {
+                        user = result
+                    } else {
+                        errorMessage = "Bruker ikke funnet"
+                    }
                 }
             }
         }
@@ -58,7 +59,6 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
             // Navn og rating
             Text(
                 text = "Welcome, ${user?.username}",  // Viser brukernavnet fra Firestore
-                // TODO: FIX (fra server) text = user!!.username,  // Brukerens navn
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -103,8 +103,6 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
                 Text("Forside", color = MaterialTheme.colorScheme.onPrimary)
             }
 
-
-
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
@@ -133,7 +131,7 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
             }
         } else {
             // Hvis brukeren ikke finnes, vis feilmelding
-            Text(text = "Brukerdata ikke funnet", color = MaterialTheme.colorScheme.error)
+            Text(text = errorMessage.ifEmpty { "Brukerdata ikke funnet" }, color = MaterialTheme.colorScheme.error)
         }
     }
 }

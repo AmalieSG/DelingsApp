@@ -29,16 +29,23 @@ fun AppNavHost(
         composable("register") {
             RegisterScreen(navController, userViewModel)
         }
-        composable("profile") {
-            ProfileScreen(navController, userViewModel)
+        composable("profile/{username}") { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username")
+            ProfileScreen(username, userViewModel, navController) // Pass the username to ProfileScreen
         }
         composable("users") {
             UserListScreen(navController, userViewModel)
         }
 
+/*
         // Use ProductsPage instead of MainPage
         composable("products") {
-            ProductsPage()  // Navigate to ProductsPage, where products are displayed
+            ProductsScreen()  // Navigate to ProductsPage, where products are displayed
+        }
+*/
+
+        composable("checklist") {
+            ReturnChecklistPage(navController)  // Naviger til sjekklisten
         }
 
         composable("chat/{recipientUserId}") { backStackEntry ->
@@ -49,6 +56,5 @@ fun AppNavHost(
                 recipientUserId = recipientUserId
             )
         }
-
     }
 }
