@@ -62,7 +62,7 @@ class UserViewModel : ViewModel() {
                     val errorMessage = when (errorCode) {
                         "ERROR_USER_NOT_FOUND" -> "User not found"
                         "ERROR_WRONG_PASSWORD" -> "Wrong password"
-                        else -> "Login failed"
+                        else -> "User does not exist"
                     }
                     callback(false, errorMessage)
                 }

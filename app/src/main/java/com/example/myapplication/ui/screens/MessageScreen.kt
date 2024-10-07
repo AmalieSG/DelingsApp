@@ -1,8 +1,10 @@
 package com.example.myapplication.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,10 +36,11 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
             .addSnapshotListener { snapshot, error ->
                 if (error == null) {
                     messages = snapshot?.documents?.mapNotNull { it.toObject(Message::class.java) } ?: emptyList()
+                    // Log the messages for debugging
+                    Log.d("ChatMessages", "Fetched messages: $messages")
                 }
             }
     }
-
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Message list
@@ -45,10 +48,10 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
             modifier = Modifier
                 .weight(1f)
                 .padding(8.dp),
-            reverseLayout = false // Show messages from the top
+            reverseLayout = true // Show messages from the bottom
         ) {
-            items(messages.size) { index ->
-                MessageItem(messages[index], currentUserId)
+            items(messages) { message ->
+                MessageItem(message, currentUserId)
             }
         }
 
@@ -70,6 +73,7 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
 
 @Composable
 fun MessageItem(message: Message, currentUserId: String) {
+    // Check if the message was sent by the current user
     val isSentByCurrentUser = message.sender == currentUserId
 
     // Align the message depending on who sent it
@@ -82,17 +86,17 @@ fun MessageItem(message: Message, currentUserId: String) {
         Column(
             modifier = Modifier
                 .padding(8.dp)
-                .background(if (isSentByCurrentUser) Color.Blue else Color.LightGray)
+                .background(if (isSentByCurrentUser) Color.Blue else Color.LightGray) // Set background color based on sender
                 .padding(8.dp)
         ) {
             Text(
                 text = message.text,
                 fontSize = 16.sp,
-                color = if (isSentByCurrentUser) Color.White else Color.Black
+                color = if (isSentByCurrentUser) Color.White else Color.Black // Set text color based on sender
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "kl. ${message.timestamp}",
+                text = "kl. ${message.timestamp}", // Display timestamp
                 fontSize = 12.sp,
                 color = Color.Gray
             )
@@ -144,9 +148,7 @@ fun sendMessage(db: FirebaseFirestore, chatId: String, senderId: String, message
     db.collection("chats").document(chatId).collection("messages").add(newMessage)
 }
 
-
 // Function to generate a unique ID for the chat between two users
 fun getChatId(userId1: String, userId2: String): String {
     return if (userId1 < userId2) "$userId1$userId2" else "$userId2$userId1"
 }
-
