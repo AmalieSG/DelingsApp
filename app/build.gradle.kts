@@ -18,7 +18,7 @@ android {
     }
 
     buildFeatures {
-        compose = true 
+        compose = true
     }
 
     composeOptions {
@@ -47,12 +47,16 @@ dependencies {
     // Jetpack Compose
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation("androidx.compose.ui:ui:1.5.3")
-    implementation("androidx.compose.material:material:1.5.3")
+    implementation("androidx.compose.material3:material3:1.1.0")
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 
-    // Denne avhengigheten er nødvendig for å bruke `viewModel` med Jetpack Compose
+    // ViewModel for Jetpack Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // Debugging tools for Compose
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
@@ -66,4 +70,3 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
-
