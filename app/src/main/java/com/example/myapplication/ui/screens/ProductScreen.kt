@@ -51,7 +51,7 @@ fun DisplayImageFromUrl(imageUrl: String) {
 }
 @Composable
 fun ProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel) {
-    var product by remember { mutableStateOf(Product("", "", "", 0.0, "", "", "")) }
+    var product by remember { mutableStateOf(Product("", "", "", 0.0, "", "", "", false)) }
 
     LaunchedEffect(productName) {
         if (productName != null) {
@@ -86,6 +86,20 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
 
         Text(
             text = "Pris: ${product.price} kr",
+            fontSize = 14.sp,
+            color = Color.Gray
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "eier: ${product.owner}",
+            fontSize = 14.sp,
+            color = Color.Gray
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Staus - leid?: ${product.status}",
             fontSize = 14.sp,
             color = Color.Gray
         )

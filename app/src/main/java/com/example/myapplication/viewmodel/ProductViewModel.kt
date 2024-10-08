@@ -14,7 +14,8 @@ data class Product(
     val price: Double = 0.0,
     val photos: String = "",
     val location: String = "",
-    val category: String = ""
+    val category: String = "",
+    val status: Boolean = false
 )
 
 class ProductViewModel : ViewModel() {
@@ -67,7 +68,7 @@ class ProductViewModel : ViewModel() {
         }
     }
 
-
+    //getproductID er fra chatgpt
     suspend fun getProduct(name: String): Product? {
         return try {
             val productId = getProductId(name)
