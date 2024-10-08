@@ -11,4 +11,6 @@ sealed class ScreenRoutes(val route: String, val title: String, val icon: ImageV
     object Profile : ScreenRoutes("profile/{username}", "Profile", Icons.Filled.Person)
     object Login : ScreenRoutes("login", "Login", Icons.Filled.Add)
     object Register : ScreenRoutes("register", "Register", Icons.Filled.Add)
+    object Product : ScreenRoutes("product", "Product", Icons.Filled.Add)
+
 }

@@ -1,23 +1,89 @@
 package com.example.myapplication.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.mutableStateListOf
-import com.example.myapplication.components.Product
+import com.google.firebase.firestore.FirebaseFirestore
+//import com.example.myapplication.components.Product
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
+
+data class Product(
+    val name: String = "",
+    val owner: String = "",
+    val description: String = "",
+    val price: Double = 0.0,
+    val photos: String = "",
+    val location: String = "",
+    val category: String = ""
+)
 
 class ProductViewModel : ViewModel() {
-    private val products = mutableStateListOf<Product>()
+    private val db: FirebaseFirestore = Firebase.firestore
 
-    fun addProduct(product: Product) {
-        products.add(product)
-    }
-    fun removeProduct(product: Product) {
-        products.remove(product)
-    }
-    fun updateProduct(product: Product) {
-        val index = products.indexOfFirst { it.name == product.name }
-        if (index != -1) {
-            products[index] = product
+
+    private suspend fun getProductId(name: String): String? {
+        return try {
+            val querySnapshot = db.collection("Products")
+                .whereEqualTo("name", name)
+                .get()
+                .await()
+            if (querySnapshot.documents.isNotEmpty()) {
+                querySnapshot.documents[0].id
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            println("Kunne ikke finne noen id.")
+            null
         }
     }
 
+
+    fun addProduct(product: Product) {
+        db.collection("Products").document().set(product).addOnSuccessListener {
+            println("Produkt lagt til")
+        }.addOnFailureListener {
+            println("Kunne ikke legge til produkt")
+        }
+    }
+
+    suspend fun removeProduct(product: Product) {
+        val productId = getProductId(product.name)
+        if (productId != null) {
+            db.collection("Products").document(productId).delete().await()
+            println("Produkt fjernet")
+        } else {
+            println("Kunne ikke finne produkt for å fjerne.")
+        }
+    }
+
+    suspend fun updateProduct(product: Product) {
+        val productId = getProductId(product.name)
+        if (productId != null) {
+            db.collection("Products").document(productId).set(product).await()
+            println("Produkt oppdatert")
+        } else {
+            println("Kunne ikke finne produkt for oppdatering.")
+        }
+    }
+
+
+    suspend fun getProduct(name: String): Product? {
+        return try {
+            val productId = getProductId(name)
+            if (productId != null) {
+                val documentSnapshot = db.collection("Products")
+                    .document(productId)
+                    .get()
+                    .await()
+                documentSnapshot.toObject(Product::class.java)
+            } else {
+                println("Kunne ikke finne produkt med navnet: $name")
+                null
+            }
+        } catch (e: Exception) {
+            println("Feil ved henting av produkt: ${e.message}")
+            null
+        }
+    }
 }
