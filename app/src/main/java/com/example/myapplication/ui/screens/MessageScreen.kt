@@ -24,12 +24,10 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
     val db = FirebaseFirestore.getInstance()
     val chatId = getChatId(currentUserId, recipientUserId)
 
-    // States for messages
     var messages by remember { mutableStateOf(listOf<Message>()) }
     var newMessage by remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
 
-    // Fetch messages from Firestore
     LaunchedEffect(chatId) {
         db.collection("chats").document(chatId).collection("messages")
             .orderBy("timestamp", Query.Direction.ASCENDING)
@@ -48,14 +46,13 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
             modifier = Modifier
                 .weight(1f)
                 .padding(8.dp),
-            reverseLayout = true // Show messages from the bottom
+            reverseLayout = true
         ) {
             items(messages) { message ->
                 MessageItem(message, currentUserId)
             }
         }
 
-        // Message input section
         MessageInputSection(
             newMessage = newMessage,
             onMessageChange = { newMessage = it },
@@ -63,7 +60,7 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
                 scope.launch {
                     if (newMessage.text.isNotEmpty()) {
                         sendMessage(db, chatId, currentUserId, newMessage.text)
-                        newMessage = TextFieldValue("") // Clear input after sending
+                        newMessage = TextFieldValue("")
                     }
                 }
             }
@@ -73,10 +70,10 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
 
 @Composable
 fun MessageItem(message: Message, currentUserId: String) {
-    // Check if the message was sent by the current user
+
     val isSentByCurrentUser = message.sender == currentUserId
 
-    // Align the message depending on who sent it
+
     Row(
         horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start,
         modifier = Modifier
@@ -86,17 +83,17 @@ fun MessageItem(message: Message, currentUserId: String) {
         Column(
             modifier = Modifier
                 .padding(8.dp)
-                .background(if (isSentByCurrentUser) Color.Blue else Color.LightGray) // Set background color based on sender
+                .background(if (isSentByCurrentUser) Color.Blue else Color.LightGray)
                 .padding(8.dp)
         ) {
             Text(
                 text = message.text,
                 fontSize = 16.sp,
-                color = if (isSentByCurrentUser) Color.White else Color.Black // Set text color based on sender
+                color = if (isSentByCurrentUser) Color.White else Color.Black
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "kl. ${message.timestamp}", // Display timestamp
+                text = "kl. ${message.timestamp}",
                 fontSize = 12.sp,
                 color = Color.Gray
             )
@@ -135,20 +132,20 @@ fun MessageInputSection(
 data class Message(
     val sender: String = "",
     val text: String = "",
-    val timestamp: String = ""  // Use a string for simplicity
+    val timestamp: String = ""
 )
 
-// Function to send messages to Firestore
+
 fun sendMessage(db: FirebaseFirestore, chatId: String, senderId: String, messageText: String) {
     val newMessage = Message(
         sender = senderId,
         text = messageText,
-        timestamp = System.currentTimeMillis().toString()  // Use current timestamp
+        timestamp = System.currentTimeMillis().toString()
     )
     db.collection("chats").document(chatId).collection("messages").add(newMessage)
 }
 
-// Function to generate a unique ID for the chat between two users
+
 fun getChatId(userId1: String, userId2: String): String {
     return if (userId1 < userId2) "$userId1$userId2" else "$userId2$userId1"
 }

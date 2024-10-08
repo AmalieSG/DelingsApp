@@ -1,7 +1,7 @@
 package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*  // Importer nødvendige Composables
+import androidx.compose.foundation.layout.*  // Import necessary Composables
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -47,7 +47,7 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (user != null) {
-            // Profilseksjon med innebygd ikon for brukerprofil
+            // Profile section with user icon
             Icon(
                 imageVector = Icons.Default.AccountCircle,
                 contentDescription = "Profile Picture",
@@ -56,21 +56,21 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Navn og rating
+            // Name and rating
             Text(
-                text = "Welcome, ${user?.username}",  // Viser brukernavnet fra Firestore
+                text = "Welcome, ${user?.username}",  // Display username from Firestore
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Rating-seksjon med innebygd stjerneikon
+            // Rating section with star icon
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "Rating", fontSize = 16.sp)
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
-                    imageVector = Icons.Default.Star,  // Stjerneikon
+                    imageVector = Icons.Default.Star,  // Star icon
                     contentDescription = "Rating",
                     tint = Color.Yellow,
                     modifier = Modifier.size(16.dp)
@@ -79,14 +79,14 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Knappene i profilen
-            ProfileButton(text = "Rediger profil", onClick = { /* Handle profile edit */ })
+            // Profile buttons
+            ProfileButton(text = "Rediger profil", onClick = { /* Handle profile edit */ }, navController)
             Spacer(modifier = Modifier.height(16.dp))
-            ProfileButton(text = "Mine annonser", onClick = { /* Handle ads */ })
+            ProfileButton(text = "Mine annonser", onClick = { /* Handle ads */ }, navController)
             Spacer(modifier = Modifier.height(16.dp))
-            ProfileButton(text = "Definere responstid", onClick = { /* Handle response time */ })
+            ProfileButton(text = "Definere responstid", onClick = { /* Handle response time */ }, navController)
             Spacer(modifier = Modifier.height(16.dp))
-            ProfileButton(text = "Sette tidsrom for tilgjengelighet", onClick = { /* Handle availability */ })
+            ProfileButton(text = "Sette tidsrom for tilgjengelighet", onClick = { /* Handle availability */ }, navController)
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -117,7 +117,7 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Logg ut-knappen
+            // Log out button
             Button(
                 onClick = {
                     navController.navigate("login") {
@@ -130,14 +130,20 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
                 Text("Logg ut", color = MaterialTheme.colorScheme.onError)
             }
         } else {
-            // Hvis brukeren ikke finnes, vis feilmelding
+            // If user not found, display error message
             Text(text = errorMessage.ifEmpty { "Brukerdata ikke funnet" }, color = MaterialTheme.colorScheme.error)
         }
+
+        // Button to navigate to ReturnProductPage
+        Spacer(modifier = Modifier.height(16.dp))
+        ProfileButton(text = "Return Product", onClick = {
+            navController.navigate("return_product") // Navigate to Return Product Page
+        }, navController)
     }
 }
 
 @Composable
-fun ProfileButton(text: String, onClick: () -> Unit) {
+fun ProfileButton(text: String, onClick: () -> Unit, navController: NavController) {
     Button(
         onClick = onClick,
         modifier = Modifier

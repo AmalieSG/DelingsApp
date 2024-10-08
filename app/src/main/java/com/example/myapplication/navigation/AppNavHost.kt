@@ -56,5 +56,8 @@ fun AppNavHost(
                 recipientUserId = recipientUserId
             )
         }
+        composable("return_product") { // New route for ReturnProductPage
+            ReturnProductPage(navController)
+        }
     }
 }
