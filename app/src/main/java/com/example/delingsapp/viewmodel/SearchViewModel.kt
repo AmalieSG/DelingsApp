@@ -26,6 +26,7 @@ class SearchViewModel : ViewModel() {
         _query,
         _products,
         _isSearchInitiated
+
     ) { query, products, isSearchInitiated ->
         if (isSearchInitiated) {
             if (query.isEmpty()) {
@@ -42,7 +43,7 @@ class SearchViewModel : ViewModel() {
             emptyList()
         }
     }
-    
+
     fun updateQuery(newQuery: String) {
         _query.value = newQuery
     }
