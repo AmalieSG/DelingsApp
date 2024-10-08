@@ -101,10 +101,13 @@ fun ReturnProductPage(navController: NavController) {
 
         // Returner produkt
         Button(
-            onClick = { /* Handle return product action */ },
+            onClick = {
+                navController.navigate("camera") // Assuming you have a route set up for the CameraActivity
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Returner produkt")
+            Text(text = "Open Camera")
         }
+
     }
 }

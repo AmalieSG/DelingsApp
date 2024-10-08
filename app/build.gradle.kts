@@ -51,6 +51,9 @@ android {
     }
 }
 
+val camerax_version = "1.2.2"
+
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -78,9 +81,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.google.firebase.firestore)
     implementation (libs.firebase.messaging.ktx.vlatestversion)
-    /*implementation("androidx.camera:camera-core:${1.2.2}")
-    implementation("androidx.camera:camera-camera2:${1.2.2}")
-    implementation("androidx.camera:camera-lifecycle:${1.2.2}")
-    implementation("androidx.camera:camera-view:${1.2.2}")
-    implementation("androidx.camera:camera-extensions:${camerax_version}")*/
+    implementation("androidx.camera:camera-core:${camerax_version}")
+    implementation("androidx.camera:camera-camera2:${camerax_version}")
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    implementation("androidx.camera:camera-view:${camerax_version}")
+    implementation("androidx.camera:camera-extensions:${camerax_version}")
+    implementation ("com.google.guava:guava:31.0.1-android")
 }

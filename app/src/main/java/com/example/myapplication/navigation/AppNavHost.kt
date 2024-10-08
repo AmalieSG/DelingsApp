@@ -11,6 +11,7 @@ import com.example.myapplication.ui.screens.*
 import com.example.myapplication.viewmodel.UserViewModel
 import com.example.myapplication.navigation.NavBar
 import com.example.myapplication.navigation.ScreenRoutes
+import com.example.myapplication.ui.CameraActivity
 
 @Composable
 fun AppNavHost(
@@ -59,5 +60,10 @@ fun AppNavHost(
         composable("return_product") { // New route for ReturnProductPage
             ReturnProductPage(navController)
         }
+
+        composable("camera") {
+            CameraActivity()
+        }
+
     }
 }
