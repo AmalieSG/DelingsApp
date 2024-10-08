@@ -12,6 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
+import com.gruppe2.delingsapp.viewmodel.createAdvertisement
+import com.gruppe2.delingsapp.viewmodel.sampleProducts
 
 
 @Composable

@@ -1,7 +1,6 @@
-package com.gruppe2.delingsapp.ui.screens.advertisement
+package com.gruppe2.delingsapp.viewmodel
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.tooling.preview.Preview
 import com.gruppe2.delingsapp.data.model.Advertisement
 import com.gruppe2.delingsapp.data.model.Product
 

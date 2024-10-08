@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.gruppe2.delingsapp.data.model.Product
+import com.gruppe2.delingsapp.viewmodel.sampleProducts
 
 @Composable
 fun AddProductScreen() {
