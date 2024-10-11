@@ -16,6 +16,8 @@ data class User(
     val rating: Float = 0f
 )
 
+
+
 class UserViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db: FirebaseFirestore = Firebase.firestore

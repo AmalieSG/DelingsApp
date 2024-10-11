@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.navigation.AppNavHost
 import com.example.myapplication.viewmodel.UserViewModel
+import com.example.myapplication.viewmodel.ProductViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,11 +15,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val userViewModel: UserViewModel = viewModel()  // Del UserViewModel mellom skjermene
+            val productViewModel: ProductViewModel = viewModel()
 
             // Kall AppNavHost og send inn både navController og userViewModel
             AppNavHost(
                 navController = navController,
-                userViewModel = userViewModel  // Legg til userViewModel som parameter
+                userViewModel = userViewModel,
+                productViewModel = productViewModel
             )
         }
     }
