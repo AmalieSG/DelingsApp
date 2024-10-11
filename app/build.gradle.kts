@@ -55,7 +55,24 @@ val camerax_version = "1.2.2"
 
 
 dependencies {
+    // Jetpack Compose
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.compose.ui:ui:1.5.3")
+    implementation("androidx.compose.material3:material3:1.1.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 
+    // ViewModel for Jetpack Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Debugging tools for Compose
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
+
+    // Other necessary dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -74,6 +91,9 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
     implementation(libs.coil.compose)
     implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
