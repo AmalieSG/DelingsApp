@@ -12,7 +12,7 @@ data class Product(
     val owner: String = "",
     val description: String = "",
     val price: Double = 0.0,
-    val photos: String = "",
+    val photos: List<String> = mutableListOf(),
     val location: String = "",
     val category: String = "",
     val status: Boolean = false
@@ -68,7 +68,7 @@ class ProductViewModel : ViewModel() {
         }
     }
 
-    //getproductID er fra chatgpt
+    //getProduct er fra chatgpt
     suspend fun getProduct(name: String): Product? {
         return try {
             val productId = getProductId(name)

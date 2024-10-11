@@ -1,26 +1,22 @@
-package com.example.myapplication.ui.screens
+package com.example.myapplication.ui.screens.productScreens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,29 +25,37 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.myapplication.viewmodel.Product
 //import com.example.myapplication.components.Product
 import com.example.myapplication.viewmodel.ProductViewModel
-import kotlinx.coroutines.launch
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.Button
+import kotlinx.coroutines.launch
 
 @Composable
 fun DisplayImageFromUrl(imageUrl: String) {
     AsyncImage(
         model = imageUrl,
         contentDescription = "Image from URL",
-        modifier = Modifier.size(200.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f) // This makes the image take up a fixed square area.
+            .clip(CircleShape),
         contentScale = ContentScale.Crop
-
     )
 }
+
 @Composable
 fun ProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel) {
-    var product by remember { mutableStateOf(Product("", "", "", 0.0, "", "", "", false)) }
+    var product by remember { mutableStateOf(Product("", "", "", 0.0, mutableListOf(), "", "", false)) }
+    var currentImageIndex by remember { mutableStateOf(0) }
 
     LaunchedEffect(productName) {
         if (productName != null) {
@@ -63,6 +67,7 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
             }
         }
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,8 +80,47 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
+
         Spacer(modifier = Modifier.height(16.dp))
-        DisplayImageFromUrl(product.photos)
+
+        if (product.photos.isNotEmpty()) {
+            DisplayImageFromUrl(product.photos[currentImageIndex])
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    onClick = {
+
+                        currentImageIndex = (currentImageIndex - 1 + product.photos.size) % product.photos.size
+                    },
+                    enabled = product.photos.size > 1
+                ) {
+                    Icon(modifier = Modifier.size(16.dp),imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous")
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Button(
+                    onClick = {
+
+                        currentImageIndex = (currentImageIndex + 1) % product.photos.size
+                    },
+                    enabled = product.photos.size > 1
+                ) {
+                    Icon(modifier = Modifier.size(16.dp),imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next")
+                }
+            }
+        } else {
+            Text("Ingen bilder tilgjengelig", fontSize = 14.sp, color = Color.Gray)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = product.description,
             fontSize = 14.sp,
@@ -92,19 +136,19 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "eier: ${product.owner}",
+            text = "Eier: ${product.owner}",
             fontSize = 14.sp,
             color = Color.Gray
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Staus - leid?: ${product.status}",
+            text = "Status - leid?: ${product.status}",
             fontSize = 14.sp,
             color = Color.Gray
         )
-
         Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = "Kategori: ${product.category}",
             fontSize = 14.sp,
@@ -112,6 +156,12 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        Button(
+            onClick = {
+                navController.navigate("updateProduct/$productName")
+            }
+        ) {
+            Text("Oppdater")
+        }
     }
 }
-

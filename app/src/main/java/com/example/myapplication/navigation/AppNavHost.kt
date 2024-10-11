@@ -7,15 +7,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.myapplication.navigation.routes.NavbarRoutes
+import com.example.myapplication.navigation.routes.ScreenRoutes
 import com.example.myapplication.ui.screens.HomePage
 import com.example.myapplication.ui.screens.LoginScreen
 import com.example.myapplication.ui.screens.ProfileScreen
 import com.example.myapplication.ui.screens.RegisterScreen
-import com.example.myapplication.ui.screens.ProductScreen
+import com.example.myapplication.ui.screens.productScreens.EditProductScreen
+import com.example.myapplication.ui.screens.productScreens.ProductScreen
 import com.example.myapplication.viewmodel.UserViewModel
 import com.example.myapplication.viewmodel.ProductViewModel
-import com.example.myapplication.navigation.NavBar
-import com.example.myapplication.navigation.ScreenRoutes
 
 @Composable
 fun AppNavHost(
@@ -25,11 +26,11 @@ fun AppNavHost(
     modifier: Modifier = Modifier
 ) {
     val bottomNavItems = listOf(
-        ScreenRoutes.Home,
-        ScreenRoutes.Login,
-        ScreenRoutes.Profile,
-        ScreenRoutes.Register,
-        ScreenRoutes.Product
+        NavbarRoutes.Home,
+        NavbarRoutes.Login,
+        NavbarRoutes.Profile,
+        NavbarRoutes.Register,
+        NavbarRoutes.Product
     )
 
     Scaffold(
@@ -52,9 +53,15 @@ fun AppNavHost(
                 val username = backStackEntry.arguments?.getString("username")
                 ProfileScreen(username, userViewModel, navController)
             }
-            composable(ScreenRoutes.Product.route) {
-                ProductScreen("Slagdrill",navController, productViewModel)
+            composable(ScreenRoutes.Product.route) {  backStackEntry ->
+                val productName = backStackEntry.arguments?.getString("productName")
+                ProductScreen(productName, navController, productViewModel)
             }
+
+            composable(ScreenRoutes.UpdateProduct.route) {  backStackEntry ->
+                val productName = backStackEntry.arguments?.getString("productName")
+                EditProductScreen(productName, navController, productViewModel)
+        }
             composable(ScreenRoutes.Home.route) {
                 HomePage()
             }
