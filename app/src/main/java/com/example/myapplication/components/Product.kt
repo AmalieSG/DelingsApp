@@ -1,4 +1,4 @@
-package com.example.delingsapp.ui.components
+package com.example.myapplication.components
 
 import android.net.Uri
 

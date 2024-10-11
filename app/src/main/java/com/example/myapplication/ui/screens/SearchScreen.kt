@@ -1,4 +1,4 @@
-package com.example.delingsapp.ui.screens
+package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,8 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.delingsapp.viewmodel.SearchViewModel
-import com.example.delingsapp.ui.components.SearchBar
+import com.example.myapplication.components.ProductCard
+import com.example.myapplication.viewmodel.SearchViewModel
+import com.example.myapplication.components.SearchBar
 
 @Composable
 fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
@@ -32,7 +33,7 @@ fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
         if (isSearchInitiated) {
             LazyColumn {
                 items(filteredProducts) { product ->
-                    ProductScreen(product = product)
+                    ProductCard(product = product)
                 }
                 if (filteredProducts.isEmpty()) {
                     item {
