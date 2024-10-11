@@ -53,9 +53,12 @@ fun AppNavHost(
                 val username = backStackEntry.arguments?.getString("username")
                 ProfileScreen(username, userViewModel, navController)
             }
-            composable(ScreenRoutes.Product.route) {  backStackEntry ->
-                val productName = backStackEntry.arguments?.getString("productName")
-                ProductScreen(productName, navController, productViewModel)
+           // composable(ScreenRoutes.Product.route) {  backStackEntry ->
+              //  val productName = backStackEntry.arguments?.getString("productName")
+               // ProductScreen(productName, navController, productViewModel)
+            //}
+            composable(ScreenRoutes.Product.route) {
+                ProductScreen("Slagdrill", navController, productViewModel)
             }
 
             composable(ScreenRoutes.UpdateProduct.route) {  backStackEntry ->
