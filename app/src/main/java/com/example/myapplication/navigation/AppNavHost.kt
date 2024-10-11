@@ -7,11 +7,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.myapplication.ui.CameraActivity
 import com.example.myapplication.ui.screens.*
 import com.example.myapplication.viewmodel.UserViewModel
-import com.example.myapplication.navigation.NavBar
-import com.example.myapplication.navigation.ScreenRoutes
-import com.example.myapplication.ui.CameraActivity
 
 @Composable
 fun AppNavHost(
@@ -32,38 +30,46 @@ fun AppNavHost(
         }
         composable("profile/{username}") { backStackEntry ->
             val username = backStackEntry.arguments?.getString("username")
-            ProfileScreen(username, userViewModel, navController) // Pass the username to ProfileScreen
+            ProfileScreen(username, userViewModel, navController)
         }
         composable("users") {
             UserListScreen(navController, userViewModel)
         }
 
-/*
-        // Use ProductsPage instead of MainPage
-        composable("products") {
-            ProductsScreen()  // Navigate to ProductsPage, where products are displayed
-        }
-*/
-
         composable("checklist") {
-            ReturnChecklistPage(navController)  // Naviger til sjekklisten
+            ReturnChecklistPage(navController)
         }
 
         composable("chat/{recipientUserId}") { backStackEntry ->
             val recipientUserId = backStackEntry.arguments?.getString("recipientUserId") ?: ""
             MessageScreen(
                 navController = navController,
-                currentUserId = userViewModel.currentUserId ?: "", // Assuming currentUserId is available in UserViewModel
+                currentUserId = userViewModel.currentUserId ?: "",
                 recipientUserId = recipientUserId
             )
         }
-        composable("return_product") { // New route for ReturnProductPage
+
+        composable("return_product") {
             ReturnProductPage(navController)
+        }
+
+        // Route for PaymentOptionsScreen
+        composable("payment_options") {
+            PaymentOptionsScreen(navController)
+        }
+
+        // Route for VisaPaymentScreen, passing currentUserId
+        composable("visa_payment") {
+            VisaPaymentScreen(navController)
+        }
+
+        // Route for VippsPaymentScreen, passing currentUserId
+        composable("vipps_payment") {
+            VippsPaymentScreen(navController)
         }
 
         composable("camera") {
             CameraActivity()
         }
-
     }
 }

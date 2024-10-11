@@ -17,7 +17,7 @@ import com.example.myapplication.viewmodel.User
 
 @Composable
 fun UserListScreen(navController: NavController, userViewModel: UserViewModel) {
-    var users by remember { mutableStateOf(listOf<User>()) }  // Use 'var' to update the list
+    var users by remember { mutableStateOf(listOf<User>()) }
     val db = FirebaseFirestore.getInstance()
 
     // Fetch all users from Firestore
@@ -36,8 +36,8 @@ fun UserListScreen(navController: NavController, userViewModel: UserViewModel) {
         LazyColumn {
             items(users) { user ->
                 UserItem(user, onClick = {
-                    // Navigate to chat screen with the selected user
-                    navController.navigate("chat/${user.username}")  // Use username or userId
+                    // Navigate to chat screen with the selected user's userId
+                    navController.navigate("chat/${user.userId}")
                 })
             }
         }
@@ -52,6 +52,6 @@ fun UserItem(user: User, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable { onClick() }
     ) {
-        Text(text = user.username, fontSize = 16.sp)  // Display the username
+        Text(text = user.username, fontSize = 16.sp)
     }
 }

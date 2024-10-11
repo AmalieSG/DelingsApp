@@ -33,8 +33,9 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
             .orderBy("timestamp", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error == null) {
-                    messages = snapshot?.documents?.mapNotNull { it.toObject(Message::class.java) } ?: emptyList()
-                    // Log the messages for debugging
+                    // Henter alle meldinger fra chatten uten ekstra filtrering
+                    messages = snapshot?.documents?.mapNotNull { it.toObject(Message::class.java) }
+                        ?: emptyList()
                     Log.d("ChatMessages", "Fetched messages: $messages")
                 }
             }
@@ -70,9 +71,7 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
 
 @Composable
 fun MessageItem(message: Message, currentUserId: String) {
-
     val isSentByCurrentUser = message.sender == currentUserId
-
 
     Row(
         horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start,
@@ -135,7 +134,6 @@ data class Message(
     val timestamp: String = ""
 )
 
-
 fun sendMessage(db: FirebaseFirestore, chatId: String, senderId: String, messageText: String) {
     val newMessage = Message(
         sender = senderId,
@@ -144,7 +142,6 @@ fun sendMessage(db: FirebaseFirestore, chatId: String, senderId: String, message
     )
     db.collection("chats").document(chatId).collection("messages").add(newMessage)
 }
-
 
 fun getChatId(userId1: String, userId2: String): String {
     return if (userId1 < userId2) "$userId1$userId2" else "$userId2$userId1"

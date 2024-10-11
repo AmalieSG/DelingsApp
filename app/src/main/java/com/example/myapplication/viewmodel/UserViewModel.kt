@@ -29,7 +29,7 @@ class UserViewModel : ViewModel() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val userId = auth.currentUser?.uid
-                    val newUser = User(username = username, phoneNumber = phoneNumber, email = email)
+                    val newUser = User(userId = userId ?: "", username = username, phoneNumber = phoneNumber, email = email)
 
                     // Store user data in Firestore
                     if (userId != null) {
@@ -50,7 +50,6 @@ class UserViewModel : ViewModel() {
             }
     }
 
-
     // Funksjon for å logge inn bruker
     fun login(email: String, password: String, callback: (Boolean, String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
@@ -68,7 +67,6 @@ class UserViewModel : ViewModel() {
                 }
             }
     }
-
 
     // Funksjon for å hente brukerdata basert på UID
     fun getCurrentUser(callback: (User?) -> Unit) {

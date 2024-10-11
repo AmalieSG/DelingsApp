@@ -108,6 +108,9 @@ fun ReturnProductPage(navController: NavController) {
         ) {
             Text(text = "Open Camera")
         }
-
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { navController.popBackStack() }) {
+            Text("Go back")
+        }
     }
 }

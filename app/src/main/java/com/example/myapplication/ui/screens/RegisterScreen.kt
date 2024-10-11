@@ -1,7 +1,7 @@
 package com.example.myapplication.ui.screens
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*  // Pass på at dette er importert
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -72,10 +72,15 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
 
         // Registeringsknapp
         Button(onClick = {
+            if (email.isBlank() || username.isBlank() || phoneNumber.isBlank() || password.isBlank()) {
+                errorMessage = "All fields are required"
+                return@Button
+            }
+
             userViewModel.register(email, password, username, phoneNumber) { success, error ->
                 if (success) {
                     Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
-                    navController.navigate("login")
+                    navController.navigate("profile/${userViewModel.currentUserId}")
                 } else {
                     errorMessage = error ?: "Registration failed"
                 }
@@ -83,11 +88,11 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
         }) {
             Text("Register")
         }
+        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             navController.popBackStack()  // Gå tilbake til login-skjermen
         }) {
             Text("Go back")
         }
-
     }
 }
