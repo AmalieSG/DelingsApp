@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
+import com.example.myapplication.navigation.routes.NavbarRoutes
 
 data class BottomNavItem(
     val title: String,
@@ -18,7 +19,7 @@ data class BottomNavItem(
 
 
 @Composable
-fun NavBar(navController: NavHostController, items: List<ScreenRoutes>) {
+fun NavBar(navController: NavHostController, items: List<NavbarRoutes>) {
     NavigationBar(
         containerColor = Color.White,
         contentColor = Color.Black

@@ -1,4 +1,4 @@
-/*package com.gruppe2.delingsapp.ui.screens
+/*package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun HomePage() {
+fun ProductsPage() {
     Column(
         modifier = Modifier
             .fillMaxSize()

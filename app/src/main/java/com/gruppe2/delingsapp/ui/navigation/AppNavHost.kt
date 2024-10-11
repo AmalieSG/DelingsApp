@@ -7,6 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.gruppe2.delingsapp.ui.CameraActivity
+import com.gruppe2.delingsapp.ui.screens.*
+import com.gruppe2.delingsapp.ui.navigation.routes.NavbarRoutes
+import com.gruppe2.delingsapp.ui.navigation.routes.ScreenRoutes
+import com.gruppe2.delingsapp.ui.screens.productScreens.EditProductScreen
+import com.gruppe2.delingsapp.ui.screens.productScreens.ProductScreen
+//import com.example.myapplication.viewmodel.ProductViewModel
+import com.gruppe2.delingsapp.viewmodel.ProductViewModel
 import com.gruppe2.delingsapp.ui.screens.HomePage
 import com.gruppe2.delingsapp.ui.screens.LoginScreen
 import com.gruppe2.delingsapp.ui.screens.ProfileScreen
@@ -17,13 +25,15 @@ import com.gruppe2.delingsapp.viewmodel.UserViewModel
 fun AppNavHost(
     navController: NavHostController,
     userViewModel: UserViewModel,
+    productViewModel: ProductViewModel,
     modifier: Modifier = Modifier
 ) {
     val bottomNavItems = listOf(
-        ScreenRoutes.Home,
-        ScreenRoutes.Login,
-        ScreenRoutes.Profile,
-        ScreenRoutes.Register
+        NavbarRoutes.Home,
+        NavbarRoutes.Login,
+        NavbarRoutes.Profile,
+        NavbarRoutes.Register,
+        NavbarRoutes.Product
     )
 
     Scaffold(
@@ -46,9 +56,56 @@ fun AppNavHost(
                 val username = backStackEntry.arguments?.getString("username")
                 ProfileScreen(username, userViewModel, navController)
             }
+           // composable(ScreenRoutes.Product.route) {  backStackEntry ->
+              //  val productName = backStackEntry.arguments?.getString("productName")
+               // ProductScreen(productName, navController, productViewModel)
+            //}
+            composable(ScreenRoutes.Product.route) {
+                ProductScreen("Slagdrill", navController, productViewModel)
+            }
+
+            composable(ScreenRoutes.UpdateProduct.route) {  backStackEntry ->
+                val productName = backStackEntry.arguments?.getString("productName")
+                EditProductScreen(productName, navController, productViewModel)
+        }
             composable(ScreenRoutes.Home.route) {
                 HomePage()
             }
+            composable("chat/{recipientUserId}") { backStackEntry ->
+                val recipientUserId = backStackEntry.arguments?.getString("recipientUserId") ?: ""
+               // TODO: Sørge for å importerer MessageScreen / løse feil (asn)
+                MessageScreen(
+                    navController = navController,
+                    currentUserId = userViewModel.currentUserId ?: "",
+                    recipientUserId = recipientUserId
+                )
+            }
+
+            composable("return_product") {
+                ReturnProductPage(navController)
+            }
+
+            // Route for PaymentOptionsScreen
+            composable("payment_options") {
+                PaymentOptionsScreen(navController)
+            }
+
+            // Route for VisaPaymentScreen, passing currentUserId
+            composable("visa_payment") {
+                VisaPaymentScreen(navController)
+            }
+
+            // Route for VippsPaymentScreen, passing currentUserId
+            composable("vipps_payment") {
+                VippsPaymentScreen(navController)
+            }
+
+            composable("camera") {
+                CameraActivity()
+            }
+
         }
+
+
     }
 }

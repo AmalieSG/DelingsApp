@@ -1,4 +1,4 @@
-package com.gruppe2.delingsapp.data.model
+/*package com.gruppe2.delingsapp.data.model
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -13,4 +13,4 @@ data class Product(
     val price: Double, // Rental price per day
     val deposit: Double, // Security deposit amount
     val img: String? = null // Image URL or path for the product
-)
+) */

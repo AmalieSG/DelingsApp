@@ -1,4 +1,4 @@
-package com.example.delingsapp
+package com.gruppe2.delingsapp
 
 import org.junit.Test
 

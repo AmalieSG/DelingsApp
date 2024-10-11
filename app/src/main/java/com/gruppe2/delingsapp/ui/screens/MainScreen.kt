@@ -1,4 +1,4 @@
-/*package com.gruppe2.delingsapp.ui.screens
+package com.gruppe2.delingsapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -138,4 +138,3 @@ fun RecommendationRow() {
         }
     }
 }
-*/
