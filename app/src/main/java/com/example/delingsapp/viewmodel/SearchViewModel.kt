@@ -3,7 +3,7 @@ package com.example.delingsapp.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
-import com.example.delingsapp.ui.components.Product
+import com.example.delingsapp.model.Product
 import kotlinx.coroutines.launch
 
 class SearchViewModel : ViewModel() {

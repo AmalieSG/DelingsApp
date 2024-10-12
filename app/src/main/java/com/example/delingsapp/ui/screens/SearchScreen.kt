@@ -6,8 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.delingsapp.ui.components.SearchBar
-import com.example.delingsapp.ui.components.ProductList
+import com.example.delingsapp.components.SearchBar
+import com.example.delingsapp.components.ProductList
 import com.example.delingsapp.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 

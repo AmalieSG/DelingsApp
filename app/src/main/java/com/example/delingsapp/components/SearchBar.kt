@@ -1,4 +1,4 @@
-package com.example.delingsapp.ui.components
+package com.example.delingsapp.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
