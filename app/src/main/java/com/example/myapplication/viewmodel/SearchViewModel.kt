@@ -1,9 +1,9 @@
-package com.example.delingsapp.viewmodel
+package com.example.myapplication.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
-import com.example.delingsapp.model.Product
+import com.example.myapplication.model.Product
 import kotlinx.coroutines.launch
 
 class SearchViewModel : ViewModel() {

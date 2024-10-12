@@ -1,4 +1,4 @@
-package com.example.delingsapp.components
+package com.example.myapplication.components
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
-import com.example.delingsapp.model.Product
+import com.example.myapplication.model.Product
 
 @Composable
 fun ProductCard(product: Product) {

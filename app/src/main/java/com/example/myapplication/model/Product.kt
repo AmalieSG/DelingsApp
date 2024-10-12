@@ -1,4 +1,4 @@
-package com.example.delingsapp.model
+package com.example.myapplication.model
 
 import android.net.Uri
 
