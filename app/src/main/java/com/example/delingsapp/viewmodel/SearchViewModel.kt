@@ -48,7 +48,7 @@ class SearchViewModel : ViewModel() {
             val query = _searchQuery.value
             flowOf(
                 if (query.isBlank()) {
-                    _products
+                    emptyList()
                 } else {
                     _products.filter { product ->
                         // Utfører søk på tvers av alle relevante felter (navn, beskrivelse, kategori, plassering, eier)
