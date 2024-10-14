@@ -13,6 +13,7 @@ import com.example.myapplication.ui.screens.HomePage
 import com.example.myapplication.ui.screens.LoginScreen
 import com.example.myapplication.ui.screens.ProfileScreen
 import com.example.myapplication.ui.screens.RegisterScreen
+import com.example.myapplication.ui.screens.productScreens.AddProductScreen
 import com.example.myapplication.ui.screens.productScreens.EditProductScreen
 import com.example.myapplication.ui.screens.productScreens.ProductScreen
 import com.example.myapplication.viewmodel.UserViewModel
@@ -49,6 +50,10 @@ fun AppNavHost(
             composable(ScreenRoutes.Register.route) {
                 RegisterScreen(navController, userViewModel)
             }
+            composable(ScreenRoutes.AddProduct.route) { backStackEntry ->
+                val userId = backStackEntry.arguments?.getString("userId")
+                AddProductScreen(userId,navController, productViewModel)
+            }
             composable(ScreenRoutes.Profile.route) { backStackEntry ->
                 val username = backStackEntry.arguments?.getString("username")
                 ProfileScreen(username, userViewModel, navController)
@@ -58,7 +63,7 @@ fun AppNavHost(
                // ProductScreen(productName, navController, productViewModel)
             //}
             composable(ScreenRoutes.Product.route) {
-                ProductScreen("Slagdrill", navController, productViewModel)
+                ProductScreen("Slagdrill", navController, productViewModel,userViewModel)
             }
 
             composable(ScreenRoutes.UpdateProduct.route) {  backStackEntry ->

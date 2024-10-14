@@ -1,5 +1,7 @@
 package com.example.myapplication.ui.screens.productScreens
 
+import com.example.myapplication.viewmodel.UserViewModel
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,7 +32,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun EditProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel) {
+fun AddProductScreen(userId: String?, navController: NavController, productViewModel: ProductViewModel) {
     var product by remember { mutableStateOf(Product("", "", "", 0.0, mutableListOf(), "", "", false)) }
     var updatedName by remember { mutableStateOf(product.name) }
     var updatedOwner by remember { mutableStateOf(product.ownerId) }
@@ -42,25 +44,6 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
     var updatedStatus by remember { mutableStateOf(product.status) }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(productName) {
-        if (productName != null) {
-            val result = productViewModel.getProduct(productName)
-            if (result != null) {
-                product = result
-                updatedName = result.name
-                updatedOwner = result.ownerId
-                updatedDescription = result.description
-                updatedPrice = result.price
-                updatedPhotos.clear()
-                updatedPhotos.addAll(result.photos)
-                updatedLocation = result.location
-                updatedCategory = result.category
-                updatedStatus = result.status
-            } else {
-                println("Kunne ikke finne produkt")
-            }
-        }
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,15 +57,6 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
             label = { Text("Product Name") },
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        updatedOwner?.let {
-            OutlinedTextField(
-                value = it,
-                onValueChange = { updatedOwner = it },
-                label = { Text("Owner") },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
@@ -97,7 +71,7 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
             onValueChange = { updatedPrice = it.toDoubleOrNull() ?: 0.0 },
             label = { Text("Price") },
             modifier = Modifier.fillMaxWidth()
-                    )
+        )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = updatedLocation,
@@ -106,14 +80,14 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
-       
+
 
         Button(
             onClick = {
                 coroutineScope.launch {
                     product = product.copy(
                         name = updatedName,
-                        ownerId = updatedOwner,
+                        ownerId = userId,
                         description = updatedDescription,
                         price = updatedPrice,
                         photos = updatedPhotos.toList(),
@@ -121,8 +95,8 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
                         category = updatedCategory,
                         status = updatedStatus
                     )
-                    productViewModel.updateProduct(product)
-                    println("Product updated: $updatedName")
+                    productViewModel.addProduct(product)
+                    println("Product Added: $updatedName")
                 }
             }
         ) {

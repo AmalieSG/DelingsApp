@@ -9,7 +9,7 @@ import kotlinx.coroutines.tasks.await
 
 data class Product(
     val name: String = "",
-    val owner: String = "",
+    val ownerId: String? = "",
     val description: String = "",
     val price: Double = 0.0,
     val photos: List<String> = mutableListOf(),

@@ -37,6 +37,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
+import com.example.myapplication.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -53,7 +54,7 @@ fun DisplayImageFromUrl(imageUrl: String) {
 }
 
 @Composable
-fun ProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel) {
+fun ProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel,userViewModel: UserViewModel) {
     var product by remember { mutableStateOf(Product("", "", "", 0.0, mutableListOf(), "", "", false)) }
     var currentImageIndex by remember { mutableStateOf(0) }
 
@@ -136,7 +137,7 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Eier: ${product.owner}",
+            text = "Eier: ${product.ownerId}",
             fontSize = 14.sp,
             color = Color.Gray
         )
@@ -156,12 +157,21 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        //Button(
+           // onClick = {
+               // navController.navigate("updateProduct/$productName")
+           // }
+        //) {
+            //Text("Oppdater")
+       // }
+        Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = {
-                navController.navigate("updateProduct/$productName")
+                navController.navigate("addProduct/${userViewModel.currentUserId}")
             }
         ) {
-            Text("Oppdater")
+            Text("legg til nytt produkt")
         }
     }
 }
