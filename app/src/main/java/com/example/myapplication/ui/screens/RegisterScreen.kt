@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.myapplication.navigation.routes.NavbarRoutes
 import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
@@ -79,8 +80,11 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
 
             userViewModel.register(email, password, username, phoneNumber) { success, error ->
                 if (success) {
+                    // Show a success message
                     Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
-                    navController.navigate("profile/${userViewModel.currentUserId}")
+
+                    // Navigate to Login Screen after registration
+                    navController.navigate(NavbarRoutes.Login.route)
                 } else {
                     errorMessage = error ?: "Registration failed"
                 }
@@ -89,8 +93,9 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
             Text("Register")
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(onClick = {
-            navController.popBackStack()  // Gå tilbake til login-skjermen
+            navController.navigate(NavbarRoutes.Login.route)
         }) {
             Text("Go back")
         }

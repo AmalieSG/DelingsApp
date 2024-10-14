@@ -13,5 +13,6 @@ sealed class ScreenRoutes(val route: String, val title: String) {
     object Register : ScreenRoutes("register", "Register")
     object Product : ScreenRoutes("product/{productName}", "Product(test)")
     object UpdateProduct : ScreenRoutes("updateProduct/{productName}", "UpdateProduct(test)")
-
+    object UserList : ScreenRoutes("user_list", "User List")
+    object Messages : NavbarRoutes("messages", "Messages", Icons.Filled.Add)
 }

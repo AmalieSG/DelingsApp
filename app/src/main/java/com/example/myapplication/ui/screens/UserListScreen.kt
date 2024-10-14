@@ -16,7 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.example.myapplication.viewmodel.User
 
 @Composable
-fun UserListScreen(navController: NavController, userViewModel: UserViewModel) {
+fun UserListScreen(navController: NavController, userViewModel: UserViewModel, currentUserId: String) {
     var users by remember { mutableStateOf(listOf<User>()) }
     val db = FirebaseFirestore.getInstance()
 
@@ -24,7 +24,8 @@ fun UserListScreen(navController: NavController, userViewModel: UserViewModel) {
     LaunchedEffect(Unit) {
         db.collection("users").get().addOnSuccessListener { snapshot ->
             val userList = snapshot.documents.mapNotNull { it.toObject(User::class.java) }
-            users = userList
+            // Filter out the current user
+            users = userList.filter { it.userId != currentUserId }
         }
     }
 
