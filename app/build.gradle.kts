@@ -72,6 +72,9 @@ dependencies {
     // Debugging tools for Compose
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
 
+    // Coil fpr Jetpack Compose
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
     // Other necessary dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -1,50 +1,64 @@
 package com.example.myapplication.ui.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myapplication.components.ProductCard
-import com.example.myapplication.viewmodel.SearchViewModel
 import com.example.myapplication.components.SearchBar
+import com.example.myapplication.components.ProductList
+import com.example.myapplication.viewmodel.ProductViewModel
+import com.example.myapplication.viewmodel.SearchViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
-    val query by searchViewModel.query.collectAsState()
-    val filteredProducts by searchViewModel.filteredProducts.collectAsState(initial = emptyList())
-    val isSearchInitiated by searchViewModel.isSearchInitiated.collectAsState(initial = false)
+fun SearchScreen(
+    productViewModel: ProductViewModel
+) {
 
-    Column {
-        SearchBar(
-            query = query,
-            onQueryChange = { newQuery ->
-                searchViewModel.updateQuery(newQuery)
-            },
-            onSearch = { searchViewModel.initiateSearch() }
-        )
+    // Oppretter en instans av SearchViewModel manuelt, med produktViewModel som parameter
+    val searchViewModel = remember { SearchViewModel(productViewModel) }
 
-        if (isSearchInitiated) {
-            LazyColumn {
-                items(filteredProducts) { product ->
-                    ProductCard(product = product)
-                }
-                if (filteredProducts.isEmpty()) {
-                    item {
-                        Text(
-                            text = "Ingen produkter funnet",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
+    // Henter produktene når skjermen vises
+    LaunchedEffect(Unit) {
+        productViewModel.fetchAllProducts()
+    }
+    // Husk BottomSheetState
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded =  false)
+    )
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val searchQuery by searchViewModel.searchQuery.collectAsState()
+    //val filteredProducts by searchViewModel.filteredProducts.collectAsState()
+    val filteredProducts by searchViewModel.filteredProducts.collectAsState()
+
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
+        sheetContent = {
+            // Filtrerte produkter i bottom sheet
+            ProductList(products = filteredProducts)
+        },
+        sheetPeekHeight = 100.dp, // Justerer start høyden på bottom sheet
+        sheetShape = MaterialTheme.shapes.large
+    ) {
+        // UI med søkefunksjonalitet på toppen
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            SearchBar(
+                searchQuery = searchQuery,
+                onQueryChange = { searchViewModel.onSearchQueryChanged(it) },
+                onSearchTriggered = {
+                    searchViewModel.triggerSearch()
+
+                    // Åpne bottom sheet når søket trigges
+                    coroutineScope.launch {
+                        bottomSheetScaffoldState.bottomSheetState.expand()
                     }
                 }
-            }
+            )
         }
     }
 }

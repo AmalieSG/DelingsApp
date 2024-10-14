@@ -110,8 +110,10 @@ fun AppNavHost(
             }
 
             composable("search") {
-                SearchScreen()
+                SearchScreen(productViewModel = productViewModel)
             }
         }
+
+
     }
 }

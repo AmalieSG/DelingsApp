@@ -1,53 +1,127 @@
 package com.example.myapplication.viewmodel
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import com.example.myapplication.components.Product
-import kotlinx.coroutines.flow.Flow
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-class SearchViewModel : ViewModel() {
-    private val _query = MutableStateFlow("")
-    val query: StateFlow<String> = _query
+class SearchViewModel(
+    private val productViewModel: ProductViewModel
+) : ViewModel() {
 
-    private val _isSearchInitiated = MutableStateFlow(false)
-    val isSearchInitiated: StateFlow<Boolean> = _isSearchInitiated
-
-    private val _products = MutableStateFlow(
-        listOf(
-            Product("Sofa", "John", "Komfortabel sofa", 5000.0, _location = "Oslo", _category = "Furniture"),
-            Product("TV", "Anna", "Flatskjerm TV", 3000.0, _location = "Bergen", _category = "Electronics"),
-            Product("Bord", "Emma", "Rundt spisebord", 1500.0, _location = "Trondheim", _category = "Furniture")
+    // Eksempel på produkter
+    val _products = listOf(
+        Product(
+            name = "Mountain Bike",
+            owner = "John Doe",
+            description = "A sturdy mountain bike suitable for rough terrains.",
+            price = 150.0,
+            photos = listOf("https://example.com/bike1.jpg", "https://example.com/bike2.jpg"),
+            location = "Oslo",
+            category = "Sports & Outdoors",
+            status = true
+        ),
+        Product(
+            name = "Tent",
+            owner = "Jane Smith",
+            description = "A spacious 4-person tent, ideal for camping trips.",
+            price = 100.0,
+            photos = listOf("https://example.com/tent1.jpg"),
+            location = "Bergen",
+            category = "Camping & Hiking",
+            status = true
+        ),
+        Product(
+            name = "Electric Drill",
+            owner = "Mark Johnson",
+            description = "Powerful cordless electric drill for home improvements.",
+            price = 75.0,
+            photos = listOf("https://example.com/drill1.jpg", "https://example.com/drill2.jpg"),
+            location = "Trondheim",
+            category = "Tools",
+            status = false
+        ),
+        Product(
+            name = "Kayak",
+            owner = "Emily Davis",
+            description = "Single-person kayak, perfect for lake adventures.",
+            price = 200.0,
+            photos = listOf("https://example.com/kayak1.jpg"),
+            location = "Stavanger",
+            category = "Water Sports",
+            status = true
         )
     )
 
-    val filteredProducts: Flow<List<Product>> = combine(
-        _query,
-        _products,
-        _isSearchInitiated
-    ) { query, products, isSearchInitiated ->
-        if (isSearchInitiated) {
-            if (query.isEmpty()) {
-                products
-            } else {
-                products.filter { product ->
-                    product.name.contains(query, ignoreCase = true) ||
-                            product.description.contains(query, ignoreCase = true) ||
-                            product.category.contains(query, ignoreCase = true) ||
-                            product.owner.contains(query, ignoreCase = true)
-                }
-            }
-        } else {
+
+    // Tilstand for søkespørringen (brukes under skriving)
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
+
+    // Brukes for å trigge søk når brukeren trykker på søkeknappen eller "Enter"
+    private val _triggerSearch = MutableSharedFlow<Unit>()
+
+    // Filtrerte produkter basert på søkespørringen og kun når søket er trigget
+    // Databasesøk ->
+    /*val filteredProducts: StateFlow<List<Product>> = combine(
+        productViewModel.products,  // Produktene fra Firebase
+        _triggerSearch              // Trigger søket
+    ) { products, _ ->
+        val query = _searchQuery.value
+        if (query.isBlank()) {
             emptyList()
+        } else {
+            products.filter { product ->
+                // Utfører søk på tvers av felter
+                product.name.contains(query, ignoreCase = true) ||
+                        product.description.contains(query, ignoreCase = true) ||
+                        product.category.contains(query, ignoreCase = true) ||
+                        product.location.contains(query, ignoreCase = true) ||
+                        product.owner.contains(query, ignoreCase = true)
+            }
         }
     }
-    
-    fun updateQuery(newQuery: String) {
-        _query.value = newQuery
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )*/
+
+    // Eksempelliste søk ->
+    val filteredProducts: StateFlow<List<Product>> = _triggerSearch
+        .flatMapLatest {
+            val query = _searchQuery.value
+            flowOf(
+                if (query.isBlank()) {
+                    emptyList()
+                } else {
+                    _products.filter { product ->
+                        // Utfører søk på tvers av alle relevante felter (navn, beskrivelse, kategori, plassering, eier)
+                        product.name.contains(query, ignoreCase = true) ||
+                                product.description.contains(query, ignoreCase = true) ||
+                                product.category.contains(query, ignoreCase = true) ||
+                                product.location.contains(query, ignoreCase = true) ||
+                                product.owner.contains(query, ignoreCase = true)
+                    }
+                }
+            )
+        }
+        .stateIn(
+            scope = viewModelScope,           // scope for å holde tilstanden levende
+            started = SharingStarted.Lazily,  // Start strømmen når det er minst én observatør
+            initialValue = emptyList()        // Startverdi før søket er trigget
+        )
+
+    // Oppdater søkespørringen når brukeren skriver inn i søkefeltet
+    fun onSearchQueryChanged(newQuery: String) {
+        _searchQuery.update { newQuery }
     }
 
-    fun initiateSearch() {
-        _isSearchInitiated.value = true
+    // Trigger søk når brukeren trykker på søkeknappen eller "Enter"
+    fun triggerSearch() {
+        viewModelScope.launch {
+            _triggerSearch.emit(Unit)  // Emit signalet for å trigge søket
+        }
     }
 }
