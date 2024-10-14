@@ -32,7 +32,8 @@ fun AppNavHost(
         NavbarRoutes.Login,
         NavbarRoutes.Profile,
         NavbarRoutes.Register,
-        NavbarRoutes.Product
+        NavbarRoutes.Product,
+        NavbarRoutes.Search
     )
 
     Scaffold(
@@ -106,6 +107,10 @@ fun AppNavHost(
 
             composable("camera") {
                 CameraActivity()
+            }
+
+            composable("search") {
+                SearchScreen()
             }
         }
     }
