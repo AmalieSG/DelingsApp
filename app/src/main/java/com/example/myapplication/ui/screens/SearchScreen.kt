@@ -8,14 +8,23 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.components.SearchBar
 import com.example.myapplication.components.ProductList
+import com.example.myapplication.viewmodel.ProductViewModel
 import com.example.myapplication.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    searchViewModel: SearchViewModel = viewModel()
+    productViewModel: ProductViewModel
 ) {
+
+    // Oppretter en instans av SearchViewModel manuelt, med produktViewModel som parameter
+    val searchViewModel = remember { SearchViewModel(productViewModel) }
+
+    // Henter produktene når skjermen vises
+    LaunchedEffect(Unit) {
+        productViewModel.fetchAllProducts()
+    }
     // Husk BottomSheetState
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded =  false)
@@ -24,6 +33,7 @@ fun SearchScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val searchQuery by searchViewModel.searchQuery.collectAsState()
+    //val filteredProducts by searchViewModel.filteredProducts.collectAsState()
     val filteredProducts by searchViewModel.filteredProducts.collectAsState()
 
     BottomSheetScaffold(

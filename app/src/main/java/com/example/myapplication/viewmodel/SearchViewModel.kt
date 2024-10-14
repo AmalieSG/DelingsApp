@@ -1,39 +1,59 @@
 package com.example.myapplication.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
-import com.example.myapplication.model.Product
 import kotlinx.coroutines.launch
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel(
+    private val productViewModel: ProductViewModel
+) : ViewModel() {
+
     // Eksempel på produkter
-    private val _products = listOf(
+    val _products = listOf(
         Product(
-            _name = "Item 1",
-            _owner = "Owner 1",
-            _description = "Description of product 1",
-            _price = 100.0,
-            _location = "Oslo",
-            _category = "Electronics"
+            name = "Mountain Bike",
+            owner = "John Doe",
+            description = "A sturdy mountain bike suitable for rough terrains.",
+            price = 150.0,
+            photos = listOf("https://example.com/bike1.jpg", "https://example.com/bike2.jpg"),
+            location = "Oslo",
+            category = "Sports & Outdoors",
+            status = true
         ),
         Product(
-            _name = "Item 2",
-            _owner = "Owner 2",
-            _description = "Description of product 2",
-            _price = 200.0,
-            _location = "Bergen",
-            _category = "Home Appliances"
+            name = "Tent",
+            owner = "Jane Smith",
+            description = "A spacious 4-person tent, ideal for camping trips.",
+            price = 100.0,
+            photos = listOf("https://example.com/tent1.jpg"),
+            location = "Bergen",
+            category = "Camping & Hiking",
+            status = true
         ),
         Product(
-            _name = "Product 3",
-            _owner = "Owner 3",
-            _description = "Another description",
-            _price = 300.0,
-            _location = "Trondheim",
-            _category = "Books"
+            name = "Electric Drill",
+            owner = "Mark Johnson",
+            description = "Powerful cordless electric drill for home improvements.",
+            price = 75.0,
+            photos = listOf("https://example.com/drill1.jpg", "https://example.com/drill2.jpg"),
+            location = "Trondheim",
+            category = "Tools",
+            status = false
+        ),
+        Product(
+            name = "Kayak",
+            owner = "Emily Davis",
+            description = "Single-person kayak, perfect for lake adventures.",
+            price = 200.0,
+            photos = listOf("https://example.com/kayak1.jpg"),
+            location = "Stavanger",
+            category = "Water Sports",
+            status = true
         )
     )
+
 
     // Tilstand for søkespørringen (brukes under skriving)
     private val _searchQuery = MutableStateFlow("")
@@ -43,6 +63,32 @@ class SearchViewModel : ViewModel() {
     private val _triggerSearch = MutableSharedFlow<Unit>()
 
     // Filtrerte produkter basert på søkespørringen og kun når søket er trigget
+    // Databasesøk ->
+    /*val filteredProducts: StateFlow<List<Product>> = combine(
+        productViewModel.products,  // Produktene fra Firebase
+        _triggerSearch              // Trigger søket
+    ) { products, _ ->
+        val query = _searchQuery.value
+        if (query.isBlank()) {
+            emptyList()
+        } else {
+            products.filter { product ->
+                // Utfører søk på tvers av felter
+                product.name.contains(query, ignoreCase = true) ||
+                        product.description.contains(query, ignoreCase = true) ||
+                        product.category.contains(query, ignoreCase = true) ||
+                        product.location.contains(query, ignoreCase = true) ||
+                        product.owner.contains(query, ignoreCase = true)
+            }
+        }
+    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = emptyList()
+        )*/
+
+    // Eksempelliste søk ->
     val filteredProducts: StateFlow<List<Product>> = _triggerSearch
         .flatMapLatest {
             val query = _searchQuery.value

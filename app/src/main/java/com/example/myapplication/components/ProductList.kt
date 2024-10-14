@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.model.Product
+import com.example.myapplication.viewmodel.Product
 
 @Composable
 fun ProductList(products: List<Product>) {

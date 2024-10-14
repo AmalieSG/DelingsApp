@@ -5,6 +5,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 //import com.example.myapplication.components.Product
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
 
 data class Product(
@@ -21,6 +23,21 @@ data class Product(
 class ProductViewModel : ViewModel() {
     private val db: FirebaseFirestore = Firebase.firestore
 
+    private val _products = MutableStateFlow<List<Product>>(emptyList())
+    val products: StateFlow<List<Product>> = _products
+
+    // Henter alle produkter fra Firebase
+    fun fetchAllProducts() {
+        db.collection("Products")
+            .get()
+            .addOnSuccessListener { result ->
+                val productList = result.toObjects(Product::class.java)
+                _products.value = productList
+            }
+            .addOnFailureListener { exception ->
+                println("Feil ved henting av produkter: $exception")
+            }
+    }
 
     private suspend fun getProductId(name: String): String? {
         return try {
@@ -87,4 +104,5 @@ class ProductViewModel : ViewModel() {
             null
         }
     }
+
 }

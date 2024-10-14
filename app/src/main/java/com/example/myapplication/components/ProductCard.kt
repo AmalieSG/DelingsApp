@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
-import com.example.myapplication.model.Product
+import com.example.myapplication.viewmodel.Product
 
 @Composable
 fun ProductCard(product: Product) {
