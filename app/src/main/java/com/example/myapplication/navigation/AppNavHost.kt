@@ -70,11 +70,16 @@ fun AppNavHost(
             composable(ScreenRoutes.Home.route) {
                 HomePage()
             }
+
+            composable(ScreenRoutes.UserList.route) {
+                val currentUserId = userViewModel.currentUserId ?: ""
+                UserListScreen(navController, userViewModel, currentUserId)
+            }
+
+
             composable("chat/{recipientUserId}") { backStackEntry ->
                 val recipientUserId = backStackEntry.arguments?.getString("recipientUserId") ?: ""
-               // TODO: Sørge for å importerer MessageScreen / løse feil (asn)
                 MessageScreen(
-                    navController = navController,
                     currentUserId = userViewModel.currentUserId ?: "",
                     recipientUserId = recipientUserId
                 )
@@ -102,9 +107,6 @@ fun AppNavHost(
             composable("camera") {
                 CameraActivity()
             }
-
         }
-
-
     }
 }
