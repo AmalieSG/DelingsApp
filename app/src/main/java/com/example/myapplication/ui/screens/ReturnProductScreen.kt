@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screens
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -7,6 +8,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -14,20 +16,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.platform.LocalContext
 import com.example.myapplication.R
+
 @Composable
-fun ReturnProductPage(navController: NavController) {
-    var imageUri by remember { mutableStateOf<Uri?>(null) } // State for holding the image URI
+fun ReturnProductScreen(navController: NavController) {
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
 
     // Launcher for capturing the image
-    val launcher = rememberLauncherForActivityResult(
+    val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
         onResult = { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -37,6 +39,14 @@ fun ReturnProductPage(navController: NavController) {
             } else {
                 Toast.makeText(context, "Failed to capture image", Toast.LENGTH_SHORT).show()
             }
+        }
+    )
+
+    // Launcher for picking an image from the gallery
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            imageUri = uri // Set the image URI when an image is selected
         }
     )
 
@@ -58,9 +68,8 @@ fun ReturnProductPage(navController: NavController) {
         // Button to take a picture
         Button(
             onClick = {
-                // Launch camera intent
                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                launcher.launch(takePictureIntent)
+                cameraLauncher.launch(takePictureIntent)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -76,7 +85,19 @@ fun ReturnProductPage(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Show the captured image if available
+        // Button to pick an image from the gallery
+        Button(
+            onClick = {
+                galleryLauncher.launch("image/*")
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Velg bilde fra galleriet")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Show the captured or selected image if available
         imageUri?.let { uri ->
             Image(
                 bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri)).asImageBitmap(),
@@ -99,16 +120,6 @@ fun ReturnProductPage(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Returner produkt
-        Button(
-            onClick = {
-                navController.navigate("camera") // Assuming you have a route set up for the CameraActivity
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Open Camera")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { navController.popBackStack() }) {
             Text("Go back")
         }

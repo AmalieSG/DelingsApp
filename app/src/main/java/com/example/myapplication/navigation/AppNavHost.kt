@@ -86,7 +86,7 @@ fun AppNavHost(
             }
 
             composable("return_product") {
-                ReturnProductPage(navController)
+                ReturnProductScreen(navController)
             }
 
             // Route for PaymentOptionsScreen
