@@ -155,9 +155,10 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
 
             // Button to navigate to ReturnProductPage
             Spacer(modifier = Modifier.height(16.dp))
-            ProfileButton(text = "Return Product", onClick = {
-                navController.navigate("return_product") // Navigate to Return Product Page
-            }, navController)
+            Button(onClick = { navController.navigate("return_product") }) {
+                Text("Go to Return Product Screen")
+            }
+
 
             Spacer(modifier = Modifier.height(16.dp))
             ProfileButton(text = "Go to payment", onClick = {

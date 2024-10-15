@@ -1,50 +1,47 @@
-/*package com.example.myapplication.viewmodel
+package com.example.myapplication.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.camera.core.*
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.core.content.ContextCompat
 import java.io.File
-import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 class CameraViewModel : ViewModel() {
     private lateinit var imageCapture: ImageCapture
+    private var onImageCapturedListener: ((Uri) -> Unit)? = null
 
-    fun startCamera(lifecycleOwner: LifecycleOwner) {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(lifecycleOwner.context)
+    fun startCamera(previewView: PreviewView, context: Context) {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
         cameraProviderFuture.addListener({
-            // Bli med i CameraX-setup
             val cameraProvider = cameraProviderFuture.get()
-
-            // Opprett en Preview
             val preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(previewView.surfaceProvider)
             }
-
-            // Konfigurer ImageCapture
             imageCapture = ImageCapture.Builder().build()
-
-            // Velg kamera (bakhodet kamera)
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
-            // Koble sammen komponentene
-            cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageCapture)
-        }, ContextCompat.getMainExecutor(lifecycleOwner.context))
+            cameraProvider.bindToLifecycle(context as LifecycleOwner, cameraSelector, preview, imageCapture)
+        }, ContextCompat.getMainExecutor(context))
     }
 
-    // Ta et bilde
-    fun takePicture(onImageCaptured: (File) -> Unit) {
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(createFile()).build()
+    // Setter lytteren for bildeopptak
+    fun setOnImageCapturedListener(listener: (Uri) -> Unit) {
+        onImageCapturedListener = listener
+    }
+
+    // Tar bilde
+    fun takePicture(context: Context) {
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(createFile(context)).build()
         imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(context), object : ImageCapture.OnImageSavedCallback {
             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                val savedFile = outputFileResults.savedUri?.let { File(it.path) }
-                if (savedFile != null) {
-                    onImageCaptured(savedFile) // Returner den lagrede filen
-                }
+                val savedUri = Uri.fromFile(File(outputFileResults.savedUri?.path))
+                onImageCapturedListener?.invoke(savedUri) // Varsler at bildet er tatt
             }
 
             override fun onError(exception: ImageCaptureException) {
@@ -53,9 +50,7 @@ class CameraViewModel : ViewModel() {
         })
     }
 
-    // Funksjon for å lage en fil for bildet
-    private fun createFile(): File {
-        // Implementer logikk for å opprette en fil for bildet, for eksempel
+    private fun createFile(context: Context): File {
         val storageDir = File(context.getExternalFilesDir(null), "pictures")
         if (!storageDir.exists()) {
             storageDir.mkdirs()
@@ -63,4 +58,4 @@ class CameraViewModel : ViewModel() {
         return File(storageDir, "${System.currentTimeMillis()}.jpg")
     }
 }
-*/
+
