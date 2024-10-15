@@ -1,7 +1,7 @@
 package com.example.myapplication.ui.screens
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*  // Pass på at dette er importert
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -11,15 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.myapplication.navigation.routes.NavbarRoutes
 import com.example.myapplication.viewmodel.UserViewModel
 
 @Composable
 fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
     val context = LocalContext.current
 
-    // States for brukerinput
+    var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
     Column(
@@ -29,6 +31,16 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // E-post input
+        TextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Brukernavn input
         TextField(
             value = username,
             onValueChange = { username = it },
@@ -37,6 +49,16 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Telefonnummer input
+        TextField(
+            value = phoneNumber,
+            onValueChange = { phoneNumber = it },
+            label = { Text("Phone Number") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Passord input
         TextField(
             value = password,
             onValueChange = { password = it },
@@ -49,13 +71,20 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
             Text(text = errorMessage, color = androidx.compose.ui.graphics.Color.Red)
         }
 
-        // Knappeklikk for å registrere brukeren
+        // Registeringsknapp
         Button(onClick = {
-            // Kall til register-metoden
-            userViewModel.register(username, password) { success, error ->
+            if (email.isBlank() || username.isBlank() || phoneNumber.isBlank() || password.isBlank()) {
+                errorMessage = "All fields are required"
+                return@Button
+            }
+
+            userViewModel.register(email, password, username, phoneNumber) { success, error ->
                 if (success) {
+                    // Show a success message
                     Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
-                    navController.navigate("login?message=Registration successful")
+
+                    // Navigate to Login Screen after registration
+                    navController.navigate(NavbarRoutes.Login.route)
                 } else {
                     errorMessage = error ?: "Registration failed"
                 }
@@ -63,14 +92,12 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
         }) {
             Text("Register")
         }
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Go Back-knapp som navigerer tilbake til LoginScreen
         Button(onClick = {
-            navController.popBackStack()  // Naviger tilbake til forrige skjerm
+            navController.navigate(NavbarRoutes.Login.route)
         }) {
-            Text("Go Back")
+            Text("Go back")
         }
     }
 }

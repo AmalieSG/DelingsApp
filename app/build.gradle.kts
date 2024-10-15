@@ -39,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -50,8 +51,28 @@ android {
     }
 }
 
-dependencies {
+val camerax_version = "1.2.2"
 
+
+dependencies {
+    // Jetpack Compose
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.compose.ui:ui:1.5.3")
+    implementation("androidx.compose.material3:material3:1.1.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+
+    // ViewModel for Jetpack Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
+    // Kotlin Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Debugging tools for Compose
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
+
+    // Other necessary dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -67,8 +88,12 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation(libs.firebase.messaging.ktx)
     implementation(libs.coil.compose)
     implementation(libs.androidx.foundation.layout.android)
+    //implementation(libs.androidx.appcompat)
+    //implementation(libs.material)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -77,4 +102,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.google.firebase.firestore)
+    implementation (libs.firebase.messaging.ktx.vlatestversion)
+    implementation("androidx.camera:camera-core:${camerax_version}")
+    implementation("androidx.camera:camera-camera2:${camerax_version}")
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    implementation("androidx.camera:camera-view:${camerax_version}")
+    implementation("androidx.camera:camera-extensions:${camerax_version}")
+    implementation ("com.google.guava:guava:31.0.1-android")
+    implementation ("androidx.activity:activity-compose:1.6.1")
+    implementation ("androidx.compose.ui:ui:1.3.0")
+    implementation ("androidx.compose.material3:material3:1.0.0")
 }

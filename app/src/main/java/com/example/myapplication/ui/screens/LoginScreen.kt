@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screens
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*  // Importer nødvendige Composables
 import androidx.compose.material3.*  // Importer Material3 for UI-komponenter
 import androidx.compose.runtime.*
@@ -10,12 +11,21 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myapplication.viewmodel.UserViewModel
+import java.util.regex.Pattern
 
 @Composable
 fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
+
+    var isEmailMissing by remember { mutableStateOf(false) }
+    var isPasswordMissing by remember { mutableStateOf(false) }
+
+    // Email validation pattern (simple version)
+    val emailPattern = Pattern.compile(
+        "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+    )
 
     Column(
         modifier = Modifier
@@ -24,22 +34,32 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Inndatafelt for e-post
+        // E-post input
         TextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { email = it; isEmailMissing = false },
             label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = if (isEmailMissing) 2.dp else 0.dp,
+                    color = if (isEmailMissing) Color.Red else Color.Transparent
+                )
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Inndatafelt for passord
+        // Passord input
         TextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = { password = it; isPasswordMissing = false },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = if (isPasswordMissing) 2.dp else 0.dp,
+                    color = if (isPasswordMissing) Color.Red else Color.Transparent
+                )
         )
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -51,15 +71,32 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
         // Login-knapp
         Button(
             onClick = {
-                // Kall login-metoden i UserViewModel, som bruker Firebase Authentication
-                userViewModel.login(email, password) { success: Boolean, error: String? ->
-                    if (success) {
-                        // Naviger til startsiden etter vellykket innlogging
-                        navController.navigate("home")
-                    } else {
-                        // Viser feilmelding hvis innloggingen mislyktes
-                        errorMessage = error ?: "Unknown error occurred"
+                // Sjekk for tomme felter
+                isEmailMissing = email.isBlank()
+                isPasswordMissing = password.isBlank()
+
+                if (isEmailMissing || isPasswordMissing) {
+                    errorMessage = "Missing fields"
+                } else if (!emailPattern.matcher(email).matches()) {
+                    errorMessage = "Email is badly formatted"
+                } else {
+                    // Hvis e-postformatet er riktig, prøv å logge inn
+                    userViewModel.login(email, password) { success, error ->
+                        if (success) {
+                            userViewModel.getCurrentUser { user ->
+                                if (user != null) {
+                                    // Navigate to profile with username or user ID
+                                    navController.navigate("profile/${user.username}")
+                                } else {
+                                    errorMessage = "User data not found after login."
+                                }
+                            }
+                        } else {
+                            errorMessage = error ?: "Login failed"
+                        }
                     }
+
+
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -78,3 +115,4 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
         }
     }
 }
+

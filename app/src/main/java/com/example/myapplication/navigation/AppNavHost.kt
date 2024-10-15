@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.myapplication.ui.CameraActivity
+import com.example.myapplication.ui.screens.*
 import com.example.myapplication.navigation.routes.NavbarRoutes
 import com.example.myapplication.navigation.routes.ScreenRoutes
 import com.example.myapplication.ui.screens.HomePage
@@ -72,6 +74,43 @@ fun AppNavHost(
         }
             composable(ScreenRoutes.Home.route) {
                 HomePage()
+            }
+
+            composable(ScreenRoutes.UserList.route) {
+                val currentUserId = userViewModel.currentUserId ?: ""
+                UserListScreen(navController, userViewModel, currentUserId)
+            }
+
+
+            composable("chat/{recipientUserId}") { backStackEntry ->
+                val recipientUserId = backStackEntry.arguments?.getString("recipientUserId") ?: ""
+                MessageScreen(
+                    currentUserId = userViewModel.currentUserId ?: "",
+                    recipientUserId = recipientUserId
+                )
+            }
+
+            composable("return_product") {
+                ReturnProductScreen(navController)
+            }
+
+            // Route for PaymentOptionsScreen
+            composable("payment_options") {
+                PaymentOptionsScreen(navController)
+            }
+
+            // Route for VisaPaymentScreen, passing currentUserId
+            composable("visa_payment") {
+                VisaPaymentScreen(navController)
+            }
+
+            // Route for VippsPaymentScreen, passing currentUserId
+            composable("vipps_payment") {
+                VippsPaymentScreen(navController)
+            }
+
+            composable("camera") {
+                CameraActivity()
             }
         }
     }

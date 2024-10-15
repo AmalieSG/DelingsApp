@@ -1,141 +1,102 @@
-package com.example.myapplication.ui.screens/*package com.example.myapplication.ui.screens
+package com.example.myapplication.ui.screens
 
-import androidx.compose.foundation.Image
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*  // Importer nødvendige Composables
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*  // Importer Material3 for UI-komponenter
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
-fun MessageScreen(navController: NavController, currentUserId: String, recipientUserId: String) {
+fun MessageScreen(currentUserId: String, recipientUserId: String) {
     val db = FirebaseFirestore.getInstance()
-    val chatId = getChatId(currentUserId, recipientUserId) // Unik ID for samtalen
+    val chatId = getChatId(currentUserId, recipientUserId)
 
-    // States for meldingene
     var messages by remember { mutableStateOf(listOf<Message>()) }
     var newMessage by remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
 
-    // Hente meldinger fra Firebase Firestore
     LaunchedEffect(chatId) {
         db.collection("chats").document(chatId).collection("messages")
             .orderBy("timestamp", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error == null) {
                     messages = snapshot?.documents?.mapNotNull { it.toObject(Message::class.java) } ?: emptyList()
+                    Log.d("ChatMessages", "Fetched messages: $messages")
                 }
             }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // Øvre seksjon med brukerinfo og produktinfo
-        UserInfoSection(navController)
-
-        // Liste over meldinger
+        // Message list
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
                 .padding(8.dp),
-            reverseLayout = false // Viser meldinger fra toppen
+            reverseLayout = false // Show latest messages at the bottom
         ) {
-            items(messages.size) { index ->
-                MessageItem(messages[index], currentUserId)
+            items(messages) { message ->
+                MessageItem(message, currentUserId, messages)
             }
         }
 
-        // Sendemeldingsseksjonen nederst
-        MessageInputSection(newMessage, onMessageChange = { newMessage = it }, onSendClick = {
-            scope.launch {
-                if (newMessage.text.isNotEmpty()) {
-                    sendMessage(db, chatId, currentUserId, newMessage.text)
-                    newMessage = TextFieldValue("") // Tøm inputfeltet etter sending
+        MessageInputSection(
+            newMessage = newMessage,
+            onMessageChange = { newMessage = it },
+            onSendClick = {
+                scope.launch {
+                    if (newMessage.text.isNotEmpty()) {
+                        sendMessage(db, chatId, currentUserId, newMessage.text)
+                        newMessage = TextFieldValue("") // Clear input after sending
+                    }
                 }
             }
-        })
+        )
     }
 }
 
 @Composable
-fun UserInfoSection(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
-        // Tilbake-knapp og brukerinformasjon
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Go back")
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            // Profilbilde (bruk en mock-painter for nå)
-            Image(
-                painter = painterResource(id = android.R.drawable.ic_menu_report_image),
-                contentDescription = "Profile Picture",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(Color.Gray)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Text(text = "Username", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text(text = "+47 22 20 18 19", fontSize = 14.sp, color = Color.Gray)
-                Text(text = "Last seen 5 mins ago", fontSize = 12.sp, color = Color.Green)
-            }
-        }
-        // Produktbeskrivelse og tilgjengelighet
-        Spacer(modifier = Modifier.height(8.dp))
-        Row {
-            Image(
-                painter = painterResource(id = android.R.drawable.ic_menu_camera), // Placeholder for produktbilde
-                contentDescription = "Product Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(80.dp)
-                    .background(Color.Gray)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Text(text = "Beskrivelse av produkt", fontSize = 16.sp)
-                Text(text = "Tilgjengelig", fontSize = 14.sp, color = Color.Green)
-                Text(text = "60kr", fontSize = 14.sp)
-            }
-        }
-        Divider(modifier = Modifier.padding(vertical = 8.dp))
-    }
-}
-
-@Composable
-fun MessageItem(message: Message, currentUserId: String) {
+fun MessageItem(message: Message, currentUserId: String, messages: List<Message>) {
     val isSentByCurrentUser = message.sender == currentUserId
+
+    // Get the date for the current message
+    val currentMessageDate = formatDate(message.timestamp)
+    // Get the date for the previous message if it exists
+    val previousMessageDate = if (messages.indexOf(message) > 0) {
+        formatDate(messages[messages.indexOf(message) - 1].timestamp)
+    } else {
+        ""
+    }
+
+    // Show date only if it's different from the previous message's date
+    if (currentMessageDate != previousMessageDate) {
+        Text(
+            text = currentMessageDate,
+            fontSize = 14.sp,
+            color = Color.Gray,
+            modifier = Modifier.padding(vertical = 4.dp) // Add some padding for the date
+        )
+    }
+
     Row(
         horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Column(
             modifier = Modifier
@@ -143,33 +104,33 @@ fun MessageItem(message: Message, currentUserId: String) {
                 .background(if (isSentByCurrentUser) Color.Blue else Color.LightGray)
                 .padding(8.dp)
         ) {
-            // Tidsstempel over meldingen
-            Text(text = "kl. ${message.timestamp}", fontSize = 12.sp, color = Color.Gray, textAlign = TextAlign.End)
-            Spacer(modifier = Modifier.height(4.dp))
-            // Selve meldingen
             Text(
                 text = message.text,
                 fontSize = 16.sp,
                 color = if (isSentByCurrentUser) Color.White else Color.Black
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = formatTimestamp(message.timestamp),
+                fontSize = 12.sp,
+                color = Color.Gray
             )
         }
     }
 }
 
 @Composable
-fun MessageInputSection(newMessage: TextFieldValue, onMessageChange: (TextFieldValue) -> Unit, onSendClick: () -> Unit) {
+fun MessageInputSection(
+    newMessage: TextFieldValue,
+    onMessageChange: (TextFieldValue) -> Unit,
+    onSendClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Plus-ikon for å legge til filer (kan utvides senere)
-        IconButton(onClick = { /* Add functionality to attach files */ }) {
-            Icon(Icons.Default.Add, contentDescription = "Add file")
-        }
-
-        // Meldingsinputfelt
         BasicTextField(
             value = newMessage,
             onValueChange = onMessageChange,
@@ -179,32 +140,47 @@ fun MessageInputSection(newMessage: TextFieldValue, onMessageChange: (TextFieldV
                 .background(Color.LightGray)
                 .padding(8.dp)
         )
-
-        // Send-knapp
         Button(onClick = onSendClick) {
-            Text("Send a message")
+            Text("Send")
         }
     }
 }
 
-// Modell for meldinger
+// Model for messages
 data class Message(
     val sender: String = "",
     val text: String = "",
-    val timestamp: String = ""  // Bruk String for enkelhet i visning
+    val timestamp: Timestamp = Timestamp.now() // Ensure timestamp is a Timestamp object
 )
 
-// Funksjon for å sende meldinger til Firestore
+// Function to send messages to Firestore
 fun sendMessage(db: FirebaseFirestore, chatId: String, senderId: String, messageText: String) {
-    val newMessage = Message(sender = senderId, text = messageText, timestamp = System.currentTimeMillis().toString())
-    db.collection("chats").document(chatId).collection("messages")
-        .add(newMessage)
+    val newMessage = Message(
+        sender = senderId,
+        text = messageText,
+        timestamp = Timestamp.now() // Store timestamp as Timestamp
+    )
+    db.collection("chats").document(chatId).collection("messages").add(newMessage)
 }
 
-// Funksjon for å generere en unik ID for chatten basert på bruker-IDer
+// Function to generate a unique ID for the chat between two users
 fun getChatId(userId1: String, userId2: String): String {
-    return if (userId1 < userId2) "$userId1_$userId2" else "$userId2_$userId1"
+    return if (userId1 < userId2) "$userId1$userId2" else "$userId2$userId1"
+}
+
+// Function to format timestamp
+fun formatTimestamp(timestamp: Timestamp): String {
+    val date = timestamp.toDate()
+    val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    hourFormat.timeZone = TimeZone.getTimeZone("CET") // Set timezone to CET
+    return hourFormat.format(date)
+}
+
+// Function to format date
+fun formatDate(timestamp: Timestamp): String {
+    val dateFormat = SimpleDateFormat("EEEE, d. MMMM", Locale.getDefault())
+    dateFormat.timeZone = TimeZone.getTimeZone("CET") // Set timezone to CET
+    return dateFormat.format(timestamp.toDate())
 }
 
 
-*/
