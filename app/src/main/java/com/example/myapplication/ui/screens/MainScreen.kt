@@ -6,6 +6,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -13,9 +16,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.myapplication.components.SearchBar
+import com.example.myapplication.viewmodel.ProductViewModel
+import com.example.myapplication.viewmodel.SearchViewModel
 
 @Composable
-fun HomePage() {
+fun HomePage(navController: NavController) {
+    val productViewModel: ProductViewModel = viewModel()
+    val searchViewModel = remember { SearchViewModel(productViewModel) }
+
+    val searchQuery = remember { mutableStateOf("") }
+    
+    LaunchedEffect(Unit) {
+        //productViewModel.fetchAllProducts()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -37,17 +54,17 @@ fun HomePage() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Søkefelt med ikon
-        OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            label = { Text("Search") },
-            leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = "Search Icon")
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(10.dp))
+        // Søkefelt
+        SearchBar(
+            searchQuery = searchQuery.value,
+            onQueryChange = { searchQuery.value = it },
+            onSearchTriggered = {
+                // Naviger til SearchScreen når søk utføres
+                if (searchQuery.value.isNotBlank()) {
+                    searchViewModel.onSearchQueryChanged(searchQuery.value)
+                    navController.navigate("search?query=${searchQuery.value}") // Pass the current query
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(24.dp))

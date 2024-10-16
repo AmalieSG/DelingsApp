@@ -1,11 +1,15 @@
 package com.example.myapplication.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.R
 import com.example.myapplication.components.SearchBar
 import com.example.myapplication.components.ProductList
 import com.example.myapplication.viewmodel.ProductViewModel
@@ -15,26 +19,23 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    productViewModel: ProductViewModel
+    productViewModel: ProductViewModel,
+    query: String
 ) {
 
-    // Oppretter en instans av SearchViewModel manuelt, med produktViewModel som parameter
     val searchViewModel = remember { SearchViewModel(productViewModel) }
-
-    // Henter produktene når skjermen vises
-    LaunchedEffect(Unit) {
-        productViewModel.fetchAllProducts()
-    }
-    // Husk BottomSheetState
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded =  false)
     )
-
     val coroutineScope = rememberCoroutineScope()
-
     val searchQuery by searchViewModel.searchQuery.collectAsState()
-    //val filteredProducts by searchViewModel.filteredProducts.collectAsState()
     val filteredProducts by searchViewModel.filteredProducts.collectAsState()
+
+    LaunchedEffect(query) {
+        //productViewModel.fetchAllProducts()
+        searchViewModel.onSearchQueryChanged(query)
+        searchViewModel.triggerSearch()
+    }
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
@@ -45,20 +46,33 @@ fun SearchScreen(
         sheetPeekHeight = 100.dp, // Justerer start høyden på bottom sheet
         sheetShape = MaterialTheme.shapes.large
     ) {
-        // UI med søkefunksjonalitet på toppen
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            SearchBar(
-                searchQuery = searchQuery,
-                onQueryChange = { searchViewModel.onSearchQueryChanged(it) },
-                onSearchTriggered = {
-                    searchViewModel.triggerSearch()
+        Box(modifier = Modifier.fillMaxSize()) {
 
-                    // Åpne bottom sheet når søket trigges
-                    coroutineScope.launch {
-                        bottomSheetScaffoldState.bottomSheetState.expand()
-                    }
-                }
+            // Legger til bakgrunnsbilde
+            Image(
+                painter = painterResource(id = R.drawable.map_background_image), // Bytt til din nett-URL eller bruk `painterResource(R.drawable.your_image)` for lokale bilder
+                contentDescription = "Background Image",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop // Justerer bildet for å fylle hele skjermen
             )
-        }
+
+            // UI med søkefunksjonalitet på toppen
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                SearchBar(
+                    searchQuery = searchQuery,
+                    onQueryChange = { searchViewModel.onSearchQueryChanged(it) },
+                    onSearchTriggered = {
+                        searchViewModel.triggerSearch()
+                        coroutineScope.launch {
+                            bottomSheetScaffoldState.bottomSheetState.expand()
+                        }
+                    }
+                )
+            }
+            }
     }
 }
