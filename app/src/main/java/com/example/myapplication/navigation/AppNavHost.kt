@@ -30,18 +30,18 @@ fun AppNavHost(
     productViewModel: ProductViewModel,
     modifier: Modifier = Modifier
 ) {
+    //Legg screens som skal vises i navbaren her.
     val bottomNavItems = listOf(
         NavbarRoutes.Home,
         NavbarRoutes.Login,
         NavbarRoutes.Profile,
-        NavbarRoutes.Register,
         NavbarRoutes.ownedProducts,
         NavbarRoutes.AddProduct
     )
 
     Scaffold(
         bottomBar = {
-            NavBar(navController = navController, items = bottomNavItems)
+            NavBar(navController = navController, items = bottomNavItems, userViewModel)
         }
     ) { innerPadding ->
         NavHost(

@@ -97,6 +97,16 @@ class ProductViewModel : ViewModel() {
         }
     }
 
+    suspend fun getAllProducts(): List<Product> {
+        return try {
+            val result = db.collection("Products").get().await()
+            result.toObjects(Product::class.java)
+        } catch (e: Exception) {
+            println("Feil ved henting av produkter: ${e.message}")
+            emptyList()
+        }
+    }
+
     suspend fun getAllOwnedProducts(ownerId: String?): List<Product> {
         return try {
             val result = db.collection("Products").whereEqualTo("ownerId", ownerId).get().await()
