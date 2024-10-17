@@ -61,10 +61,15 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.0")
     implementation("androidx.compose.ui:ui-tooling-preview:1.5.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+
+    // ViewModel for Jetpack Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
+    // Kotlin Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Debugging tools for Compose
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation(libs.androidx.core.ktx)
@@ -103,4 +108,10 @@ dependencies {
     implementation("androidx.camera:camera-view:${camerax_version}")
     implementation("androidx.camera:camera-extensions:${camerax_version}")
     implementation ("com.google.guava:guava:31.0.1-android")
+    implementation ("androidx.activity:activity-compose:1.6.1")
+    implementation ("androidx.compose.ui:ui:1.3.0")
+    implementation ("androidx.compose.material3:material3:1.0.0")
+    implementation (libs.firebase.storage.ktx)
+    implementation (libs.firebase.firestore.ktx)
+
 }

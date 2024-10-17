@@ -1,45 +1,35 @@
 package com.gruppe2.delingsapp.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.mutableStateListOf
-import com.gruppe2.delingsapp.ui.components.Product
 import com.google.firebase.firestore.FirebaseFirestore
-//import com.example.myapplication.components.Product
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDateTime
+
+
+data class Reservation(
+    val renterId: String,
+    val startDateTime: LocalDateTime,
+    val endDateTime: LocalDateTime
+
+)
 
 data class Product(
     val name: String = "",
-    val owner: String = "",
+    val ownerId: String? = "",
     val description: String = "",
     val price: Double = 0.0,
     val photos: List<String> = mutableListOf(),
     val location: String = "",
     val category: String = "",
-    val status: Boolean = false
+    val reservations: List<Reservation> = mutableListOf()
 )
 
 class ProductViewModel : ViewModel() {
     private val db: FirebaseFirestore = Firebase.firestore
 
-    private val _products = MutableStateFlow<List<Product>>(emptyList())
-    val products: StateFlow<List<Product>> = _products
-
-    // Henter alle produkter fra Firebase
-    fun fetchAllProducts() {
-        db.collection("Products")
-            .get()
-            .addOnSuccessListener { result ->
-                val productList = result.toObjects(Product::class.java)
-                _products.value = productList
-            }
-            .addOnFailureListener { exception ->
-                println("Feil ved henting av produkter: $exception")
-            }
-    }
 
     private suspend fun getProductId(name: String): String? {
         return try {
@@ -59,7 +49,7 @@ class ProductViewModel : ViewModel() {
     }
 
 
-    fun addProduct(product: Product) {
+    fun addProduct(product: com.gruppe2.delingsapp.viewmodel.Product) {
         db.collection("Products").document().set(product).addOnSuccessListener {
             println("Produkt lagt til")
         }.addOnFailureListener {
@@ -107,4 +97,89 @@ class ProductViewModel : ViewModel() {
         }
     }
 
+    suspend fun getAllProducts(): List<Product> {
+        return try {
+            val result = db.collection("Products").get().await()
+            result.toObjects(Product::class.java)
+        } catch (e: Exception) {
+            println("Feil ved henting av produkter: ${e.message}")
+            emptyList()
+        }
+    }
+
+    suspend fun getAllOwnedProducts(ownerId: String?): List<Product> {
+        return try {
+            val result = db.collection("Products").whereEqualTo("ownerId", ownerId).get().await()
+            result.toObjects(Product::class.java)
+        } catch (e: Exception) {
+            println("Feil ved henting av produkter: ${e.message}")
+            emptyList()
+        }
+    }
+
+    fun isProductRented(product: Product?,desiredReservationTime:LocalDateTime): Boolean? {
+        return product?.reservations?.any { reservation ->
+            desiredReservationTime.isAfter(reservation.startDateTime) && desiredReservationTime.isBefore(
+                reservation.endDateTime
+            )
+        }
+    }
+
+   suspend fun reserveProduct(productName:String, renterId:String, startDateTime:LocalDateTime, endDateTime:LocalDateTime) : Boolean {
+       val productId = getProductId(productName)
+       if (productId != null) {
+           val product = getProduct(productName)
+
+           product?.let {
+
+               if (isProductRented(it, startDateTime) == false) {
+
+                   val updatedReservations = it.reservations.toMutableList().apply {
+                       add(Reservation(renterId, startDateTime, endDateTime))
+                   }
+                   val updatedProduct = it.copy(reservations = updatedReservations)
+
+
+                   updateProduct(updatedProduct)
+                   println("Produkt reservert.")
+                   return true
+               } else {
+                   println("Tidsrommet er allerede reservert.")
+               }
+           }
+       } else {
+           println("Kunne ikke finne produkt for reservasjon.")
+       }
+       return false
+   }
+
+    suspend fun removeReservation(productName: String, renterId: String, startDateTime: LocalDateTime, endDateTime: LocalDateTime): Boolean {
+        val productId = getProductId(productName)
+        if (productId != null) {
+            val product = getProduct(productName)
+
+            product?.let {
+
+                val updatedReservations = it.reservations.filterNot { reservation ->
+                    reservation.renterId == renterId &&
+                            reservation.startDateTime == startDateTime &&
+                            reservation.endDateTime == endDateTime
+                }
+
+
+                if (updatedReservations.size != it.reservations.size) {
+                    val updatedProduct = it.copy(reservations = updatedReservations)
+
+                    updateProduct(updatedProduct)
+                    println("Reservasjon fjernet.")
+                    return true
+                } else {
+                    println("Reservasjonen ble ikke funnet.")
+                }
+            }
+        } else {
+            println("Kunne ikke finne produkt for å fjerne reservasjon.")
+        }
+        return false
+    }
 }

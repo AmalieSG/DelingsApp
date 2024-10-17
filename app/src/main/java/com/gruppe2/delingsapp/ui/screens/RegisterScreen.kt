@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gruppe2.delingsapp.viewmodel.UserViewModel
+import com.gruppe2.delingsapp.ui.navigation.routes.NavbarRoutes
 
 @Composable
 fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {

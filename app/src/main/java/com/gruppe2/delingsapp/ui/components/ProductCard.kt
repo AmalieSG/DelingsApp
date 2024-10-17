@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
-import com.example.myapplication.viewmodel.Product
+import com.gruppe2.delingsapp.viewmodel.Product
 
 @Composable
 fun ProductCard(product: Product) {
@@ -39,12 +39,30 @@ fun ProductCard(product: Product) {
         }
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = product.name, style = MaterialTheme.typography.titleLarge)
-            Text(text = "Price: ${product.price} NOK", style = MaterialTheme.typography.titleSmall)
-            Text(text = product.description, style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Owner: ${product.owner}", style = MaterialTheme.typography.bodySmall)
-            Text(text = "Location: ${product.location}", style = MaterialTheme.typography.bodySmall)
-            Text(text = "Category: ${product.category}", style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = product.name,
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = "Price: ${product.price} NOK",
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = product.description,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Owner: ${product.ownerId}",
+                style = MaterialTheme.typography.bodySmall
+            )
+            Text(
+                text = "Location: ${product.location}",
+                style = MaterialTheme.typography.bodySmall
+            )
+            Text(
+                text = "Category: ${product.category}",
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }

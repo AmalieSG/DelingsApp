@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens
+package com.gruppe2.delingsapp.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.R
-import com.example.myapplication.components.SearchBar
-import com.example.myapplication.components.ProductList
-import com.example.myapplication.viewmodel.ProductViewModel
-import com.example.myapplication.viewmodel.SearchViewModel
+import com.gruppe2.delingsapp.R
+import com.gruppe2.delingsapp.components.ProductList
+import com.gruppe2.delingsapp.ui.components.SearchBar
+import com.gruppe2.delingsapp.viewmodel.ProductViewModel
+import com.gruppe2.delingsapp.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import org.w3c.dom.Text
 
@@ -32,6 +32,7 @@ fun SearchScreen(
     val filteredProducts by searchViewModel.filteredProducts.collectAsState()
 
     LaunchedEffect(query) {
+        //productViewModel.fetchAllProducts()
         searchViewModel.onSearchQueryChanged(query)
         searchViewModel.triggerSearch()
     }

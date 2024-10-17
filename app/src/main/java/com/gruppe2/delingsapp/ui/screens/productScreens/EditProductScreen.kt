@@ -25,23 +25,20 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gruppe2.delingsapp.viewmodel.Product
 import com.gruppe2.delingsapp.viewmodel.ProductViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
+// TODO sjekk at referanser blir brukt riktig
+import com.gruppe2.delingsapp.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
-// Lagt til midlertidig for å omgå error
-//import com.gruppe2.delingsapp.ui.components.Product
 
 @Composable
-fun EditProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel) {
-    var product by remember { mutableStateOf(Product("", "", "", 0.0, mutableListOf(), "", "", false)) }
+fun EditProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel, userViewModel: UserViewModel) {
+    var product by remember { mutableStateOf(Product("", "", "", 0.0, mutableListOf(), "", "", mutableListOf())) }
     var updatedName by remember { mutableStateOf(product.name) }
-    var updatedOwner by remember { mutableStateOf(product.owner) }
+    var updatedOwner by remember { mutableStateOf(product.ownerId) }
     var updatedDescription by remember { mutableStateOf(product.description) }
     var updatedPrice by remember { mutableDoubleStateOf(product.price) }
     var updatedPhotos = remember { mutableStateListOf(*product.photos.toTypedArray()) }
     var updatedLocation by remember { mutableStateOf(product.location) }
     var updatedCategory by remember { mutableStateOf(product.category) }
-    var updatedStatus by remember { mutableStateOf(product.status) }
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(productName) {
@@ -50,19 +47,19 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
             if (result != null) {
                 product = result
                 updatedName = result.name
-                updatedOwner = result.owner
+                updatedOwner = result.ownerId
                 updatedDescription = result.description
                 updatedPrice = result.price
                 updatedPhotos.clear()
                 updatedPhotos.addAll(result.photos)
                 updatedLocation = result.location
                 updatedCategory = result.category
-                updatedStatus = result.status
             } else {
                 println("Kunne ikke finne produkt")
             }
         }
     }
+    updatedOwner = userViewModel.currentUserId
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,13 +71,6 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
             value = updatedName,
             onValueChange = { updatedName = it },
             label = { Text("Product Name") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(
-            value = updatedOwner,
-            onValueChange = { updatedOwner = it },
-            label = { Text("Owner") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -113,20 +103,24 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
                 coroutineScope.launch {
                     product = product.copy(
                         name = updatedName,
-                        owner = updatedOwner,
+                        ownerId = updatedOwner,
                         description = updatedDescription,
                         price = updatedPrice,
                         photos = updatedPhotos.toList(),
                         location = updatedLocation,
                         category = updatedCategory,
-                        status = updatedStatus
                     )
                     productViewModel.updateProduct(product)
                     println("Product updated: $updatedName")
+                    navController.popBackStack()
                 }
             }
         ) {
             Text("Save")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { navController.popBackStack() }, modifier = Modifier.fillMaxWidth()){
+            Text("Tilbake")
         }
 
         Spacer(modifier = Modifier.height(16.dp))

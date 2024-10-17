@@ -1,4 +1,4 @@
-package com.example.myapplication.viewmodel
+package com.gruppe2.delingsapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,43 +14,39 @@ class SearchViewModel(
     val _products = listOf(
         Product(
             name = "Mountain Bike",
-            owner = "John Doe",
+            ownerId = "John Doe",
             description = "A sturdy mountain bike suitable for rough terrains.",
             price = 150.0,
             photos = listOf("https://example.com/bike1.jpg", "https://example.com/bike2.jpg"),
             location = "Oslo",
             category = "Sports & Outdoors",
-            status = true
         ),
         Product(
             name = "Tent",
-            owner = "Jane Smith",
+            ownerId = "Jane Smith",
             description = "A spacious 4-person tent, ideal for camping trips.",
             price = 100.0,
             photos = listOf("https://example.com/tent1.jpg"),
             location = "Bergen",
             category = "Camping & Hiking",
-            status = true
         ),
         Product(
             name = "Electric Drill",
-            owner = "Mark Johnson",
+            ownerId = "Mark Johnson",
             description = "Powerful cordless electric drill for home improvements.",
             price = 75.0,
             photos = listOf("https://example.com/drill1.jpg", "https://example.com/drill2.jpg"),
             location = "Trondheim",
             category = "Tools",
-            status = false
         ),
         Product(
             name = "Kayak",
-            owner = "Emily Davis",
+            ownerId = "Emily Davis",
             description = "Single-person kayak, perfect for lake adventures.",
             price = 200.0,
             photos = listOf("https://example.com/kayak1.jpg"),
             location = "Stavanger",
             category = "Water Sports",
-            status = true
         )
     )
 
@@ -61,15 +57,14 @@ class SearchViewModel(
 
     // Databasesøk ->
     /*val filteredProducts: StateFlow<List<Product>> = combine(
-        productViewModel.products,  // Produktene fra Firebase
-        _triggerSearch              // Trigger søket
+        productViewModel.products,
+        _triggerSearch
     ) { products, _ ->
         val query = _searchQuery.value
         if (query.isBlank()) {
             emptyList()
         } else {
             products.filter { product ->
-                // Utfører søk på tvers av felter
                 product.name.contains(query, ignoreCase = true) ||
                         product.description.contains(query, ignoreCase = true) ||
                         product.category.contains(query, ignoreCase = true) ||
@@ -96,8 +91,8 @@ class SearchViewModel(
                         product.name.contains(query, ignoreCase = true) ||
                                 product.description.contains(query, ignoreCase = true) ||
                                 product.category.contains(query, ignoreCase = true) ||
-                                product.location.contains(query, ignoreCase = true) ||
-                                product.owner.contains(query, ignoreCase = true)
+                                product.location.contains(query, ignoreCase = true)
+                                // TODO: fikse denne linjen product.ownerId.contains(query, ignoreCase = true)
                     }
                 }
             )

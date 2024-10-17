@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens
+package com.gruppe2.delingsapp.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

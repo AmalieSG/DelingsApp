@@ -1,7 +1,15 @@
-package com.gruppe2.delingsapp.ui.screens.advertisement
+/*package com.gruppe2.delingsapp.ui.screens.advertisement
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -11,7 +19,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
+import com.gruppe2.delingsapp.ui.navigation.routes.ScreenRoutes
 import com.gruppe2.delingsapp.viewmodel.createAdvertisement
 import com.gruppe2.delingsapp.viewmodel.sampleProducts
 
@@ -22,7 +33,7 @@ fun CreateAdvertisementScreen() {
     var description by remember { mutableStateOf(TextFieldValue()) }
     var location by remember { mutableStateOf(TextFieldValue()) }
     var category by remember { mutableStateOf("General") }
-    val selectedProducts = remember { mutableStateListOf<Product>() }
+    val selectedProducts = remember { mutableStateListOf<ScreenRoutes.Product>() }
 
     Column(
         modifier = Modifier
@@ -153,3 +164,4 @@ fun SimpleOutlinedTextFieldSample() {
 
 
 //
+*/

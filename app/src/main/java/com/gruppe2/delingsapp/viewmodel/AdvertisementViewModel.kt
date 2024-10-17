@@ -1,4 +1,4 @@
-package com.gruppe2.delingsapp.viewmodel
+/*package com.gruppe2.delingsapp.viewmodel
 
 import androidx.compose.runtime.*
 import com.gruppe2.delingsapp.data.model.Advertisement
@@ -34,3 +34,4 @@ fun createAdvertisement(
     )
     advertisements.add(newAd) // Add the new advertisement to the list
 }
+*/

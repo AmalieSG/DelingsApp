@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens
+package com.gruppe2.delingsapp.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,12 +11,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
-import com.example.myapplication.viewmodel.UserViewModel
+import com.gruppe2.delingsapp.viewmodel.UserViewModel
 import com.google.firebase.firestore.FirebaseFirestore
-import com.example.myapplication.viewmodel.User
+import com.gruppe2.delingsapp.viewmodel.User
 
 @Composable
-fun UserListScreen(navController: NavController, userViewModel: UserViewModel) {
+fun UserListScreen(navController: NavController, userViewModel: UserViewModel, currentUserId: String) {
     var users by remember { mutableStateOf(listOf<User>()) }
     val db = FirebaseFirestore.getInstance()
 
@@ -24,7 +24,8 @@ fun UserListScreen(navController: NavController, userViewModel: UserViewModel) {
     LaunchedEffect(Unit) {
         db.collection("users").get().addOnSuccessListener { snapshot ->
             val userList = snapshot.documents.mapNotNull { it.toObject(User::class.java) }
-            users = userList
+            // Filter out the current user
+            users = userList.filter { it.userId != currentUserId }
         }
     }
 
