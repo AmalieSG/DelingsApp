@@ -133,7 +133,7 @@ fun AddProductScreen(userId: String?, navController: NavController, productViewM
                         )
                         productViewModel.addProduct(product)
                         println("Product Added: $updatedName")
-                        navController.navigate(ScreenRoutes.Home.route)
+                        navController.navigate(ScreenRoutes.AddProduct.route)
                     }
                 }
             ) {
