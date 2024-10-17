@@ -68,6 +68,7 @@ dependencies {
     // Kotlin Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation(libs.firebase.firestore.ktx)
 
     // Debugging tools for Compose
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")

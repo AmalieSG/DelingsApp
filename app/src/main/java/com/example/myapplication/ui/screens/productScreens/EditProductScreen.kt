@@ -25,13 +25,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.myapplication.viewmodel.Product
 import com.example.myapplication.viewmodel.ProductViewModel
+import com.example.myapplication.viewmodel.UserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun EditProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel) {
-    var product by remember { mutableStateOf(Product("", "", "", 0.0, mutableListOf(), "", "", false)) }
+fun EditProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel, userViewModel: UserViewModel) {
+    var product by remember { mutableStateOf(Product("", "", "", 0.0, mutableListOf(), "", "", mutableListOf())) }
     var updatedName by remember { mutableStateOf(product.name) }
     var updatedOwner by remember { mutableStateOf(product.ownerId) }
     var updatedDescription by remember { mutableStateOf(product.description) }
@@ -39,7 +40,6 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
     var updatedPhotos = remember { mutableStateListOf(*product.photos.toTypedArray()) }
     var updatedLocation by remember { mutableStateOf(product.location) }
     var updatedCategory by remember { mutableStateOf(product.category) }
-    var updatedStatus by remember { mutableStateOf(product.status) }
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(productName) {
@@ -55,12 +55,12 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
                 updatedPhotos.addAll(result.photos)
                 updatedLocation = result.location
                 updatedCategory = result.category
-                updatedStatus = result.status
             } else {
                 println("Kunne ikke finne produkt")
             }
         }
     }
+    updatedOwner = userViewModel.currentUserId
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,15 +74,6 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
             label = { Text("Product Name") },
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(16.dp))
-        updatedOwner?.let {
-            OutlinedTextField(
-                value = it,
-                onValueChange = { updatedOwner = it },
-                label = { Text("Owner") },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
@@ -119,10 +110,10 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
                         photos = updatedPhotos.toList(),
                         location = updatedLocation,
                         category = updatedCategory,
-                        status = updatedStatus
                     )
                     productViewModel.updateProduct(product)
                     println("Product updated: $updatedName")
+                    navController.popBackStack()
                 }
             }
         ) {
