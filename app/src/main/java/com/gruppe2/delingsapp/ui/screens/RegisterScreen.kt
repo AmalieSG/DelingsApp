@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens
+package com.gruppe2.delingsapp.ui.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gruppe2.delingsapp.viewmodel.UserViewModel
-import com.gruppe2.delingsapp.navigation.routes.NavbarRoutes
+import com.gruppe2.delingsapp.ui.navigation.routes.NavbarRoutes
 
 @Composable
 fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens
+package com.gruppe2.delingsapp.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*  // Import necessary Composables
@@ -15,12 +15,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.gruppe2.delingsapp.ui.screens.ScrollableContent
 import com.gruppe2.delingsapp.viewmodel.UserViewModel
 import com.gruppe2.delingsapp.viewmodel.User
-import com.gruppe2.delingsapp.navigation.routes.NavbarRoutes
-import com.gruppe2.delingsapp.navigation.routes.ScreenRoutes
-import com.gruppe2.delingsapp.viewmodel.UserViewModel
-import com.gruppe2.delingsapp.viewmodel.User
+import com.gruppe2.delingsapp.ui.navigation.routes.ScreenRoutes
 import kotlinx.coroutines.launch
 
 @Composable

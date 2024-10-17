@@ -1,4 +1,4 @@
-package com.gruppe2.delingsapp.data.model
+/*package com.gruppe2.delingsapp.data.model
 
 import android.icu.util.DateInterval
 import android.location.Geocoder
@@ -40,3 +40,4 @@ data class Advertisement(
 ) */
 
 
+*/

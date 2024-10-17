@@ -1,4 +1,4 @@
-package com.example.myapplication.navigation.routes
+package com.gruppe2.delingsapp.ui.navigation.routes
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
