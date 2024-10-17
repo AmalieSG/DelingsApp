@@ -14,6 +14,6 @@ sealed class NavbarRoutes(val route: String, val title: String, val icon: ImageV
     object Login : NavbarRoutes("login", "Login", Icons.Filled.Add)
     object Register : NavbarRoutes("register", "Register", Icons.Filled.Add)
     object ownedProducts : NavbarRoutes("listProducts", "My Products", Icons.Filled.Info)
-    object AddProduct : NavbarRoutes("addProduct/{userId}", "AddProduct", Icons.Filled.Add)
+    object AddProduct : NavbarRoutes("addProduct", "AddProduct", Icons.Filled.Add)
     object Messages : NavbarRoutes("messages", "Messages", Icons.Filled.Add)
 }
