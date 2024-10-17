@@ -119,6 +119,10 @@ fun EditProductScreen(productName: String?, navController: NavController, produc
         ) {
             Text("Save")
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { navController.popBackStack() }, modifier = Modifier.fillMaxWidth()){
+            Text("Tilbake")
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
     }

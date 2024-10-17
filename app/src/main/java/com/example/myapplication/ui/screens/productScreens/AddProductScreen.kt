@@ -141,6 +141,9 @@ fun AddProductScreen(userId: String?, navController: NavController, productViewM
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { navController.popBackStack() }, modifier = Modifier.fillMaxWidth()){
+                Text("Tilbake")
+            }
         }
     } else {
         Text("Du må være logget inn for å legge til et produkt.")
