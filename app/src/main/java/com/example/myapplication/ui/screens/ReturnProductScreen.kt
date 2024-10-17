@@ -3,6 +3,7 @@ package com.example.myapplication.ui.screens
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.MediaStore
@@ -17,15 +18,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.myapplication.R
+import com.google.firebase.storage.FirebaseStorage
+import java.util.UUID
 
 @Composable
 fun ReturnProductScreen(navController: NavController) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var imageUrl by remember { mutableStateOf<String?>(null) } // URL of the uploaded image
     val context = LocalContext.current
 
     // Launcher for capturing the image
@@ -42,11 +46,17 @@ fun ReturnProductScreen(navController: NavController) {
         }
     )
 
-    // Launcher for picking an image from the gallery
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            imageUri = uri // Set the image URI when an image is selected
+    // Request permission to use the camera
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                // Launch the camera when permission is granted
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                cameraLauncher.launch(takePictureIntent)
+            } else {
+                Toast.makeText(context, "Camera permission denied", Toast.LENGTH_SHORT).show()
+            }
         }
     )
 
@@ -68,36 +78,20 @@ fun ReturnProductScreen(navController: NavController) {
         // Button to take a picture
         Button(
             onClick = {
-                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                cameraLauncher.launch(takePictureIntent)
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                } else {
+                    // Launch the camera directly since permission is granted
+                    val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    cameraLauncher.launch(takePictureIntent)
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Use an image from drawable instead of the icon
-            Image(
-                painter = painterResource(id = R.drawable.camera_icon), // Replace with your drawable resource
-                contentDescription = "Take photo",
-                modifier = Modifier.size(24.dp) // Set the size of the image as needed
-            )
-            Spacer(modifier = Modifier.width(8.dp))
             Text(text = "Ta bilde av produktet")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Button to pick an image from the gallery
-        Button(
-            onClick = {
-                galleryLauncher.launch("image/*")
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Velg bilde fra galleriet")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Show the captured or selected image if available
+        // Display the image if available
         imageUri?.let { uri ->
             Image(
                 bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri)).asImageBitmap(),
@@ -106,22 +100,44 @@ fun ReturnProductScreen(navController: NavController) {
                     .size(200.dp) // Set size of the displayed image
                     .padding(16.dp)
             )
+
+            // Button to use the captured image
+            Button(
+                onClick = {
+                    // Upload image to Firebase Storage
+                    uploadImageToFirebase(uri, context) { downloadUrl ->
+                        imageUrl = downloadUrl
+                        Toast.makeText(context, "Image uploaded successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Bruk dette bildet")
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Chat med selger
-        Button(
-            onClick = { /* Handle chat action */ },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Chat med selger")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
+        // Go back button
         Button(onClick = { navController.popBackStack() }) {
             Text("Go back")
         }
     }
+}
+
+// Function to upload image to Firebase Storage
+private fun uploadImageToFirebase(imageUri: Uri, context: android.content.Context, onSuccess: (String) -> Unit) {
+    val storage = FirebaseStorage.getInstance()
+    val storageRef = storage.reference
+    val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg") // Unique file name
+
+    imageRef.putFile(imageUri)
+        .addOnSuccessListener {
+            imageRef.downloadUrl.addOnSuccessListener { uri ->
+                onSuccess(uri.toString()) // Return the download URL
+            }
+        }
+        .addOnFailureListener { e ->
+            Toast.makeText(context, "Upload failed: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
 }
