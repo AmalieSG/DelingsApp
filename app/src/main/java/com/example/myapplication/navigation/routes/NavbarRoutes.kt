@@ -13,5 +13,4 @@ sealed class NavbarRoutes(val route: String, val title: String, val icon: ImageV
     object Login : NavbarRoutes("login", "Login", Icons.Filled.Add)
     object Register : NavbarRoutes("register", "Register", Icons.Filled.Add)
     object Product : NavbarRoutes("product/Slagdrill", "Product(test)", Icons.Filled.Add)
-    object Search : NavbarRoutes("search", "Search", Icons.Filled.Search)
 }

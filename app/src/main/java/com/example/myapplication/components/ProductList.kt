@@ -16,16 +16,19 @@ import com.example.myapplication.viewmodel.Product
 fun ProductList(products: List<Product>) {
     Surface(
         modifier = Modifier
-            .fillMaxWidth() // Fyller hele bredden
-            .padding(16.dp), // Flytter padding her i stedet
-        color = MaterialTheme.colorScheme.surfaceVariant // Bruker colorScheme fra Material 3
+            .fillMaxWidth()
+            .padding(16.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant
     ) {
         LazyColumn(
-            modifier = Modifier.padding(16.dp) // Holder padding for LazyColumn
+            modifier = Modifier.padding(16.dp)
         ) {
             if (products.isEmpty()) {
                 item {
-                    Text(text = "No products found", style = MaterialTheme.typography.headlineMedium) // Typografi for Material 3
+                    Text(
+                        text = "No products found",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
                 }
             } else {
                 items(products) { product ->

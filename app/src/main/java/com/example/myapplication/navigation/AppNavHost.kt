@@ -34,8 +34,7 @@ fun AppNavHost(
         NavbarRoutes.Login,
         NavbarRoutes.Profile,
         NavbarRoutes.Register,
-        NavbarRoutes.Product,
-        NavbarRoutes.Search
+        NavbarRoutes.Product
     )
 
     Scaffold(

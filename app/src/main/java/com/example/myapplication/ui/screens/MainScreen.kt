@@ -2,8 +2,6 @@ package com.example.myapplication.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,7 +57,6 @@ fun HomePage(navController: NavController) {
             searchQuery = searchQuery.value,
             onQueryChange = { searchQuery.value = it },
             onSearchTriggered = {
-                // Naviger til SearchScreen når søk utføres
                 if (searchQuery.value.isNotBlank()) {
                     searchViewModel.onSearchQueryChanged(searchQuery.value)
                     navController.navigate("search?query=${searchQuery.value}") // Pass the current query

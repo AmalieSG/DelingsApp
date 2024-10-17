@@ -15,9 +15,9 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
-    searchQuery: String, // Motta søkestrengen som parameter
-    onQueryChange: (String) -> Unit, // Callback for å oppdatere søkestrengen
-    onSearchTriggered: () -> Unit // Callback for å trigge søket
+    searchQuery: String,
+    onQueryChange: (String) -> Unit,
+    onSearchTriggered: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -27,14 +27,13 @@ fun SearchBar(
     ) {
         TextField(
             value = searchQuery,
-            onValueChange = { onQueryChange(it) }, // Kall funksjonen for å oppdatere søkestrengen
+            onValueChange = { onQueryChange(it) },
             placeholder = { Text(text = "Search products...") },
             modifier = Modifier.weight(1f),
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(
                 onSearch = {
-                    // Når brukeren trykker på "Enter"
-                    onSearchTriggered() // Kall funksjonen for å trigge søket
+                    onSearchTriggered()
                 }
             ),
             singleLine = true,
@@ -44,8 +43,7 @@ fun SearchBar(
         )
         IconButton(
             onClick = {
-                // Når brukeren trykker på søkeikonet
-                onSearchTriggered() // Kall funksjonen for å trigge søket
+                onSearchTriggered()
             }
         ) {
             Icon(

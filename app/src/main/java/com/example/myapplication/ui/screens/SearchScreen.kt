@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
 import com.example.myapplication.components.SearchBar
 import com.example.myapplication.components.ProductList
@@ -40,23 +39,20 @@ fun SearchScreen(
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
-            // Filtrerte produkter i bottom sheet
             ProductList(products = filteredProducts)
         },
-        sheetPeekHeight = 100.dp, // Justerer start høyden på bottom sheet
+        sheetPeekHeight = 100.dp,
         sheetShape = MaterialTheme.shapes.large
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
 
-            // Legger til bakgrunnsbilde
             Image(
                 painter = painterResource(id = R.drawable.map_background_image), // Bytt til din nett-URL eller bruk `painterResource(R.drawable.your_image)` for lokale bilder
                 contentDescription = "Background Image",
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop // Justerer bildet for å fylle hele skjermen
+                contentScale = ContentScale.Crop
             )
 
-            // UI med søkefunksjonalitet på toppen
             Column(
                 modifier = Modifier
                     .fillMaxSize()
