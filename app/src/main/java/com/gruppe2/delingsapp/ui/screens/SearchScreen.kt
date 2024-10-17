@@ -1,49 +1,87 @@
 package com.gruppe2.delingsapp.ui.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.gruppe2.delingsapp.ui.components.ProductCard
-import com.gruppe2.delingsapp.viewmodel.SearchViewModel
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import com.gruppe2.delingsapp.R
 import com.gruppe2.delingsapp.ui.components.SearchBar
+import com.gruppe2.delingsapp.ui.components.ProductList
+import com.gruppe2.delingsapp.viewmodel.ProductViewModel
+import com.gruppe2.delingsapp.viewmodel.SearchViewModel
+import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
-    val query by searchViewModel.query.collectAsState()
-    val filteredProducts by searchViewModel.filteredProducts.collectAsState(initial = emptyList())
-    val isSearchInitiated by searchViewModel.isSearchInitiated.collectAsState(initial = false)
+fun SearchScreen(
+    productViewModel: ProductViewModel,
+    query: String
+) {
+    val searchViewModel = remember { SearchViewModel(productViewModel) }
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+    )
+    val coroutineScope = rememberCoroutineScope()
+    val searchQuery by searchViewModel.searchQuery.collectAsState()
+    val filteredProducts by searchViewModel.filteredProducts.collectAsState()
 
-    Column {
-        SearchBar(
-            query = query,
-            onQueryChange = { newQuery ->
-                searchViewModel.updateQuery(newQuery)
-            },
-            onSearch = { searchViewModel.initiateSearch() }
-        )
+    LaunchedEffect(query) {
+        //productViewModel.fetchAllProducts()
+        searchViewModel.onSearchQueryChanged(query)
+        searchViewModel.triggerSearch()
+    }
 
-        if (isSearchInitiated) {
-            LazyColumn {
-                items(filteredProducts) { product ->
-                    ProductCard(product = product)
-                }
-                if (filteredProducts.isEmpty()) {
-                    item {
-                        Text(
-                            text = "Ingen produkter funnet",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
+        sheetContent = {
+            if (filteredProducts.isEmpty()) {
+                Text(
+                    text = "No products found",
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            } else {
+                ProductList(products = filteredProducts)
+            }
+        },
+        sheetPeekHeight = 100.dp,
+        sheetShape = MaterialTheme.shapes.large
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            if (filteredProducts.isNotEmpty()) {
+                Image(
+                    painter = painterResource(id = R.drawable.map_background_image), // Erstatt med din lokale kartbakgrunn
+                    contentDescription = "Map Background",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                SearchBar(
+                    searchQuery = searchQuery,
+                    onQueryChange = { searchViewModel.onSearchQueryChanged(it) },
+                    onSearchTriggered = {
+                        searchViewModel.triggerSearch()
+
+                        coroutineScope.launch {
+                            bottomSheetScaffoldState.bottomSheetState.expand()
+                        }
                     }
-                }
+                )
             }
         }
     }

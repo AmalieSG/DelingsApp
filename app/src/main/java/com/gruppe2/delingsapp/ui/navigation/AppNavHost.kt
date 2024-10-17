@@ -3,6 +3,8 @@ package com.gruppe2.delingsapp.ui.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -82,7 +84,11 @@ fun AppNavHost(
                 EditProductScreen(productName, navController, productViewModel,userViewModel)
         }
             composable(ScreenRoutes.Home.route) {
-                HomePage()
+                HomePage(
+                    navController = navController,
+                    //searchQuery = searchQuery.value,
+                    //onQueryChange = { searchQuery.value = it }
+                )
             }
 
             composable(ScreenRoutes.UserList.route) {
@@ -121,6 +127,13 @@ fun AppNavHost(
             composable(ScreenRoutes.Camera.route) {
                 CameraActivity()
             }
+
+            composable("search?query={query}") { backStackEntry ->
+                val query = backStackEntry.arguments?.getString("query") ?: ""
+                SearchScreen(productViewModel = productViewModel, query = query)
+            }
         }
+
+
     }
 }
