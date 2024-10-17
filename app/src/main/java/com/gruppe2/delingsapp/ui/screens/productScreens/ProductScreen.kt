@@ -174,6 +174,15 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
                 Text("Reserver dette produktet")
             }
         }
+        //Midlertidig for visning av reservasjon
+        Button(
+            onClick = {
+                navController.navigate(ScreenRoutes.ReserveProduct.route.replace("{productName}", product.name))
+            }
+        ) {
+            Text("Reserver dette produktet")
+        }
+        //slutt
         Button(
             onClick = {
                 navController.popBackStack()
