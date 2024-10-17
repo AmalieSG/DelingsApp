@@ -33,10 +33,14 @@ import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
+import com.example.myapplication.navigation.routes.ScreenRoutes
+import com.example.myapplication.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -53,8 +57,8 @@ fun DisplayImageFromUrl(imageUrl: String) {
 }
 
 @Composable
-fun ProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel) {
-    var product by remember { mutableStateOf(Product("", "", "", 0.0, mutableListOf(), "", "", false)) }
+fun ProductScreen(productName: String?, navController: NavController, productViewModel: ProductViewModel,userViewModel: UserViewModel) {
+    var product by remember { mutableStateOf(Product("", "", "", 0.0, mutableListOf(), "", "", mutableListOf())) }
     var currentImageIndex by remember { mutableStateOf(0) }
 
     LaunchedEffect(productName) {
@@ -71,7 +75,8 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -136,14 +141,7 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Eier: ${product.owner}",
-            fontSize = 14.sp,
-            color = Color.Gray
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Status - leid?: ${product.status}",
+            text = "Eier: ${product.ownerId}",
             fontSize = 14.sp,
             color = Color.Gray
         )
@@ -154,14 +152,35 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
             fontSize = 14.sp,
             color = Color.Gray
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
+        if (userViewModel.currentUserId == product.ownerId && !product.ownerId.isNullOrEmpty()) {
+            System.out.println("User ID : ${userViewModel.currentUserId}  Owner ID: ${product.ownerId}")
+            Button(
+                onClick = {
+                    navController.navigate(ScreenRoutes.UpdateProduct.route.replace("{productName}", product.name))
+                }
+            ) {
+                Text("Rediger ditt produkt")
+            }
+        } else {
+            System.out.println("User ID : ${userViewModel.currentUserId}  Owner ID: ${product.ownerId}")
+            Button(
+                onClick = {
+                    navController.navigate(ScreenRoutes.ReserveProduct.route.replace("{productName}", product.name))
+                }
+            ) {
+                Text("Reserver dette produktet")
+            }
+        }
         Button(
             onClick = {
-                navController.navigate("updateProduct/$productName")
+                navController.popBackStack()
             }
         ) {
-            Text("Oppdater")
+            Text("Tilbake")
         }
+
     }
 }

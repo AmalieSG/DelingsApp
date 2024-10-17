@@ -20,6 +20,10 @@ import com.gruppe2.delingsapp.ui.screens.LoginScreen
 import com.gruppe2.delingsapp.ui.screens.ProfileScreen
 import com.gruppe2.delingsapp.ui.screens.RegisterScreen
 import com.gruppe2.delingsapp.viewmodel.UserViewModel
+import com.gruppe2.delingsapp.ui.screens.productScreens.AddProductScreen
+import com.gruppe2.delingsapp.ui.screens.productScreens.ProductScreen
+import com.gruppe2.delingsapp.ui.screens.productScreens.ReserveProductScreen
+import com.gruppe2.delingsapp.ui.screens.productScreens.UserProductsScreen
 
 @Composable
 fun AppNavHost(
@@ -28,17 +32,18 @@ fun AppNavHost(
     productViewModel: ProductViewModel,
     modifier: Modifier = Modifier
 ) {
+    //Legg screens som skal vises i navbaren her.
     val bottomNavItems = listOf(
         NavbarRoutes.Home,
         NavbarRoutes.Login,
         NavbarRoutes.Profile,
-        NavbarRoutes.Register,
-        NavbarRoutes.Product
+        NavbarRoutes.ownedProducts,
+        NavbarRoutes.AddProduct
     )
 
     Scaffold(
         bottomBar = {
-            NavBar(navController = navController, items = bottomNavItems)
+            NavBar(navController = navController, items = bottomNavItems, userViewModel)
         }
     ) { innerPadding ->
         NavHost(
@@ -52,21 +57,29 @@ fun AppNavHost(
             composable(ScreenRoutes.Register.route) {
                 RegisterScreen(navController, userViewModel)
             }
+            composable(ScreenRoutes.AddProduct.route) {
+                val userId = userViewModel.currentUserId?:""
+                AddProductScreen(userId,navController, productViewModel)
+            }
+            composable(ScreenRoutes.ListProducts.route) {
+                UserProductsScreen(navController, productViewModel,userViewModel)
+            }
+            composable(ScreenRoutes.ReserveProduct.route) { backStackEntry ->
+                val productName = backStackEntry.arguments?.getString("productName")
+                ReserveProductScreen(productName,navController, productViewModel,userViewModel)
+            }
             composable(ScreenRoutes.Profile.route) { backStackEntry ->
                 val username = backStackEntry.arguments?.getString("username")
                 ProfileScreen(username, userViewModel, navController)
             }
-           // composable(ScreenRoutes.Product.route) {  backStackEntry ->
-              //  val productName = backStackEntry.arguments?.getString("productName")
-               // ProductScreen(productName, navController, productViewModel)
-            //}
-            composable(ScreenRoutes.Product.route) {
-                ProductScreen("Slagdrill", navController, productViewModel)
+            composable(ScreenRoutes.Product.route) {  backStackEntry ->
+                val productName = backStackEntry.arguments?.getString("productName")
+                ProductScreen(productName, navController, productViewModel,userViewModel)
             }
 
             composable(ScreenRoutes.UpdateProduct.route) {  backStackEntry ->
                 val productName = backStackEntry.arguments?.getString("productName")
-                EditProductScreen(productName, navController, productViewModel)
+                EditProductScreen(productName, navController, productViewModel,userViewModel)
         }
             composable(ScreenRoutes.Home.route) {
                 HomePage()
@@ -78,7 +91,7 @@ fun AppNavHost(
             }
 
 
-            composable("chat/{recipientUserId}") { backStackEntry ->
+            composable(ScreenRoutes.Chat.route) { backStackEntry ->
                 val recipientUserId = backStackEntry.arguments?.getString("recipientUserId") ?: ""
                 MessageScreen(
                     currentUserId = userViewModel.currentUserId ?: "",
@@ -86,26 +99,26 @@ fun AppNavHost(
                 )
             }
 
-            composable("return_product") {
+            composable(ScreenRoutes.ReturnProduct.route) {
                 ReturnProductScreen(navController)
             }
 
             // Route for PaymentOptionsScreen
-            composable("payment_options") {
+            composable(ScreenRoutes.PaymentOptions.route) {
                 PaymentOptionsScreen(navController)
             }
 
             // Route for VisaPaymentScreen, passing currentUserId
-            composable("visa_payment") {
+            composable(ScreenRoutes.VisaPayment.route) {
                 VisaPaymentScreen(navController)
             }
 
             // Route for VippsPaymentScreen, passing currentUserId
-            composable("vipps_payment") {
+            composable(ScreenRoutes.VippsPayment.route) {
                 VippsPaymentScreen(navController)
             }
 
-            composable("camera") {
+            composable(ScreenRoutes.Camera.route) {
                 CameraActivity()
             }
         }
