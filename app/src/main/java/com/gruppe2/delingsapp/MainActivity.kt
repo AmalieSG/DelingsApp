@@ -24,8 +24,8 @@ class MainActivity : ComponentActivity() {
                 userViewModel = userViewModel,
                 productViewModel = productViewModel
             )
-            //Husk å avkommenter denne før innlevering. Gjør at man må logge inn hver gang appen åpnes.
-            //FirebaseAuth.getInstance().signOut()
+            
+            FirebaseAuth.getInstance().signOut()
         }
     }
 }
