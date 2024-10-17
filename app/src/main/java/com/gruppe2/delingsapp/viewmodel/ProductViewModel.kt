@@ -3,8 +3,11 @@ package com.gruppe2.delingsapp.viewmodel
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 
@@ -30,6 +33,8 @@ data class Product(
 class ProductViewModel : ViewModel() {
     private val db: FirebaseFirestore = Firebase.firestore
 
+    private val _products = MutableStateFlow<List<Product>>(emptyList())
+    val products: StateFlow<List<Product>> = _products
 
     private suspend fun getProductId(name: String): String? {
         return try {
@@ -97,6 +102,7 @@ class ProductViewModel : ViewModel() {
         }
     }
 
+    // TODO: Slå sammen getAllPoducts og fetchAllProducts
     suspend fun getAllProducts(): List<Product> {
         return try {
             val result = db.collection("Products").get().await()
@@ -105,6 +111,19 @@ class ProductViewModel : ViewModel() {
             println("Feil ved henting av produkter: ${e.message}")
             emptyList()
         }
+    }
+
+    fun fetchAllProducts() {
+        db.collection("Products")
+            .get()
+            .addOnSuccessListener { result: QuerySnapshot ->
+                val productList = result.toObjects(Product::class.java)
+                _products.value = productList
+            }
+            .addOnFailureListener { e: Exception ->
+                println("Feil ved henting av produkter: ${e.message}")
+                _products.value = emptyList()
+            }
     }
 
     suspend fun getAllOwnedProducts(ownerId: String?): List<Product> {
