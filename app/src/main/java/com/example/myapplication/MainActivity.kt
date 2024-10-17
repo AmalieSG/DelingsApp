@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.navigation.AppNavHost
 import com.example.myapplication.viewmodel.UserViewModel
 import com.example.myapplication.viewmodel.ProductViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
                 userViewModel = userViewModel,
                 productViewModel = productViewModel
             )
+            FirebaseAuth.getInstance().signOut()
         }
     }
 }
