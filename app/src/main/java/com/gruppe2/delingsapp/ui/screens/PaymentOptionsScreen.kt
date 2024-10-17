@@ -11,7 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.myapplication.R
+import com.gruppe2.delingsapp.R
 
 @Composable
 fun PaymentOptionsScreen(navController: NavController) {

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens.productScreens
+package com.gruppe2.delingsapp.ui.screens.productScreens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,8 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.myapplication.viewmodel.Product
-import com.example.myapplication.viewmodel.ProductViewModel
+import com.gruppe2.delingsapp.viewmodel.Product
+import com.gruppe2.delingsapp.viewmodel.ProductViewModel
 import coil.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.layout.size
@@ -43,8 +43,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
-import com.example.myapplication.navigation.routes.ScreenRoutes
-import com.example.myapplication.viewmodel.UserViewModel
+import com.gruppe2.delingsapp.ui.navigation.routes.ScreenRoutes
+import com.gruppe2.delingsapp.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

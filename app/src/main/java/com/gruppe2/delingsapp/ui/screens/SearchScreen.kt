@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gruppe2.delingsapp.ui.components.ProductCard
-import com.example.myapplication.viewmodel.SearchViewModel
-import com.example.myapplication.components.SearchBar
+import com.gruppe2.delingsapp.viewmodel.SearchViewModel
+import com.gruppe2.delingsapp.ui.components.SearchBar
 
 @Composable
 fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {

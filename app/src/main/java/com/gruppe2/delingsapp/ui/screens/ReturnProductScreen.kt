@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.example.myapplication.R
+import com.gruppe2.delingsapp.R
 import com.google.firebase.storage.FirebaseStorage
 import java.util.UUID
 

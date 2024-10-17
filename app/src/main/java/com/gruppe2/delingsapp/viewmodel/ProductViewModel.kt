@@ -1,8 +1,7 @@
 package com.gruppe2.delingsapp.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.mutableStateListOf
-import com.gruppe2.delingsapp.ui.components.Product
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -14,6 +13,7 @@ data class Reservation(
     val renterId: String,
     val startDateTime: LocalDateTime,
     val endDateTime: LocalDateTime
+
 )
 
 data class Product(
@@ -26,8 +26,6 @@ data class Product(
     val category: String = "",
     val reservations: List<Reservation> = mutableListOf()
 )
-
-
 
 class ProductViewModel : ViewModel() {
     private val db: FirebaseFirestore = Firebase.firestore
@@ -51,7 +49,7 @@ class ProductViewModel : ViewModel() {
     }
 
 
-    fun addProduct(product: Product) {
+    fun addProduct(product: com.gruppe2.delingsapp.viewmodel.Product) {
         db.collection("Products").document().set(product).addOnSuccessListener {
             println("Produkt lagt til")
         }.addOnFailureListener {

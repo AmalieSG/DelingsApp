@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens.productScreens
+package com.gruppe2.delingsapp.ui.screens.productScreens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,8 +27,6 @@ import com.gruppe2.delingsapp.viewmodel.Product
 import com.gruppe2.delingsapp.viewmodel.ProductViewModel
 // TODO sjekk at referanser blir brukt riktig
 import com.gruppe2.delingsapp.viewmodel.UserViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable

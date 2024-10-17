@@ -24,3 +24,4 @@ sealed class ScreenRoutes(val route: String, val title: String) {
     object VippsPayment : ScreenRoutes("vipps_payment","Vipps_payment")
     object Camera : ScreenRoutes("camera","Camera")
 }
+

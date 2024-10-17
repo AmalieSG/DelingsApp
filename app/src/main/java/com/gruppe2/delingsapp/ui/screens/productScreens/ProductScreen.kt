@@ -39,8 +39,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
-import com.example.myapplication.navigation.routes.ScreenRoutes
-import com.example.myapplication.viewmodel.UserViewModel
+import com.gruppe2.delingsapp.ui.navigation.routes.ScreenRoutes
+import com.gruppe2.delingsapp.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable

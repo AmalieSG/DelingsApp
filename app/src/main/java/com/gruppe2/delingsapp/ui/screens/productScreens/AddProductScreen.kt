@@ -1,6 +1,4 @@
-package com.example.myapplication.ui.screens.productScreens
-
-import com.example.myapplication.viewmodel.UserViewModel
+package com.gruppe2.delingsapp.ui.screens.productScreens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,11 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.myapplication.navigation.routes.ScreenRoutes
-import com.example.myapplication.viewmodel.Product
-import com.example.myapplication.viewmodel.ProductViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
+import com.gruppe2.delingsapp.ui.navigation.routes.ScreenRoutes
+import com.gruppe2.delingsapp.viewmodel.Product
+import com.gruppe2.delingsapp.viewmodel.ProductViewModel
 import kotlinx.coroutines.launch
 
 @Composable

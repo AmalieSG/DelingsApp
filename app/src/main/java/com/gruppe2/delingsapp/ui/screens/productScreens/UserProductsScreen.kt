@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens.productScreens
+package com.gruppe2.delingsapp.ui.screens.productScreens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,11 +27,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.example.myapplication.navigation.routes.NavbarRoutes
-import com.example.myapplication.navigation.routes.ScreenRoutes
-import com.example.myapplication.viewmodel.Product
-import com.example.myapplication.viewmodel.ProductViewModel
-import com.example.myapplication.viewmodel.UserViewModel
+import com.gruppe2.delingsapp.ui.navigation.routes.NavbarRoutes
+import com.gruppe2.delingsapp.ui.navigation.routes.ScreenRoutes
+import com.gruppe2.delingsapp.viewmodel.Product
+import com.gruppe2.delingsapp.viewmodel.ProductViewModel
+import com.gruppe2.delingsapp.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 

@@ -9,6 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.gruppe2.delingsapp.ui.navigation.routes.ScreenRoutes
+import com.gruppe2.delingsapp.viewmodel.ProductViewModel
+import com.gruppe2.delingsapp.viewmodel.Product
 
 @Composable
 fun ProductCard(product: Product) {
@@ -18,7 +21,7 @@ fun ProductCard(product: Product) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Navn: ${product.name}", style = MaterialTheme.typography.titleMedium)
-            Text(text = "Eier: ${product.owner}")
+            Text(text = "Eier: ${product.ownerId}")
             Text(text = "Beskrivelse: ${product.description}")
             Text(text = "Pris: ${product.price} kr")
             Text(text = "Lokasjon: ${product.location}")

@@ -1,10 +1,9 @@
-package com.example.myapplication.viewmodel
+package com.gruppe2.delingsapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import com.gruppe2.delingsapp.ui.components.Product
 import kotlinx.coroutines.flow.Flow
 
 class SearchViewModel : ViewModel() {
@@ -35,7 +34,7 @@ class SearchViewModel : ViewModel() {
                     product.name.contains(query, ignoreCase = true) ||
                             product.description.contains(query, ignoreCase = true) ||
                             product.category.contains(query, ignoreCase = true) ||
-                            product.owner.contains(query, ignoreCase = true)
+                            product.ownerId.contains(query, ignoreCase = true)
                 }
             }
         } else {
