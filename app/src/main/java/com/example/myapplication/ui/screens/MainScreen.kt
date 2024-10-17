@@ -59,7 +59,6 @@ fun HomePage(navController: NavController) {
             searchQuery = searchQuery.value,
             onQueryChange = { searchQuery.value = it },
             onSearchTriggered = {
-                // Naviger til SearchScreen når søk utføres
                 if (searchQuery.value.isNotBlank()) {
                     searchViewModel.onSearchQueryChanged(searchQuery.value)
                     navController.navigate("search?query=${searchQuery.value}") // Pass the current query

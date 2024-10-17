@@ -22,7 +22,6 @@ fun ProductCard(product: Product) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Vis første bilde (hvis tilgjengelig)
         if (product.photos.isNotEmpty()) {
             Image(
                 painter = rememberImagePainter(data = product.photos.firstOrNull() ?: Uri.EMPTY),
@@ -31,7 +30,6 @@ fun ProductCard(product: Product) {
                 contentScale = ContentScale.Crop
             )
         } else {
-            // Placeholder image hvis det ikke finnes bilder
             Image(
                 painter = rememberImagePainter(data = Uri.EMPTY),
                 contentDescription = null,
@@ -40,7 +38,6 @@ fun ProductCard(product: Product) {
             )
         }
 
-        // Produktinformasjon
         Column(modifier = Modifier.weight(1f)) {
             Text(text = product.name, style = MaterialTheme.typography.titleLarge)
             Text(text = "Price: ${product.price} NOK", style = MaterialTheme.typography.titleSmall)

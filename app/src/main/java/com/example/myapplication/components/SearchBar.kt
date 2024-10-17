@@ -8,51 +8,52 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
-    searchQuery: String, // Motta søkestrengen som parameter
-    onQueryChange: (String) -> Unit, // Callback for å oppdatere søkestrengen
-    onSearchTriggered: () -> Unit // Callback for å trigge søket
+    searchQuery: String,
+    onQueryChange: (String) -> Unit,
+    onSearchTriggered: () -> Unit
 ) {
-    Row(
+    OutlinedTextField(
+        value = searchQuery,
+        onValueChange = { onQueryChange(it) },
+        placeholder = { Text(text = "Search products...") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        TextField(
-            value = searchQuery,
-            onValueChange = { onQueryChange(it) }, // Kall funksjonen for å oppdatere søkestrengen
-            placeholder = { Text(text = "Search products...") },
-            modifier = Modifier.weight(1f),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    // Når brukeren trykker på "Enter"
-                    onSearchTriggered() // Kall funksjonen for å trigge søket
-                }
-            ),
-            singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.White
-            )
-        )
-        IconButton(
-            onClick = {
-                // Når brukeren trykker på søkeikonet
-                onSearchTriggered() // Kall funksjonen for å trigge søket
-            }
-        ) {
+        leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Search",
-                tint = MaterialTheme.colorScheme.primary
+                contentDescription = "Search"
             )
-        }
-    }
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                onSearchTriggered()
+            }
+        ),
+        singleLine = true,
+        shape = MaterialTheme.shapes.large,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+        )
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewSearchBar() {
+    SearchBar(
+        searchQuery = "",
+        onQueryChange = {},
+        onSearchTriggered = {}
+    )
 }
