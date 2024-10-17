@@ -10,8 +10,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.gruppe2.delingsapp.R
+import com.gruppe2.delingsapp.components.ProductList
 import com.gruppe2.delingsapp.ui.components.SearchBar
-import com.gruppe2.delingsapp.ui.components.ProductList
 import com.gruppe2.delingsapp.viewmodel.ProductViewModel
 import com.gruppe2.delingsapp.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch

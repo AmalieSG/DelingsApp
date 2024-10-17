@@ -91,8 +91,8 @@ class SearchViewModel(
                         product.name.contains(query, ignoreCase = true) ||
                                 product.description.contains(query, ignoreCase = true) ||
                                 product.category.contains(query, ignoreCase = true) ||
-                                product.location.contains(query, ignoreCase = true) ||
-                                product.owner.contains(query, ignoreCase = true)
+                                product.location.contains(query, ignoreCase = true)
+                                // TODO: fikse denne linjen product.ownerId.contains(query, ignoreCase = true)
                     }
                 }
             )

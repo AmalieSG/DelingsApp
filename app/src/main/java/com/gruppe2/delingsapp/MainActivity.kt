@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.gruppe2.delingsapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

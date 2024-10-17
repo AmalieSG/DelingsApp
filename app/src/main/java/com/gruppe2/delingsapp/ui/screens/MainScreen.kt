@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.myapplication.components.SearchBar
-import com.example.myapplication.viewmodel.ProductViewModel
-import com.example.myapplication.viewmodel.SearchViewModel
+import com.gruppe2.delingsapp.ui.components.SearchBar
+import com.gruppe2.delingsapp.viewmodel.ProductViewModel
+import com.gruppe2.delingsapp.viewmodel.SearchViewModel
 
 @Composable
 fun HomePage(navController: NavController) {

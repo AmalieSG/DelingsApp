@@ -19,6 +19,7 @@ import com.gruppe2.delingsapp.ui.screens.ScrollableContent
 import com.gruppe2.delingsapp.viewmodel.UserViewModel
 import com.gruppe2.delingsapp.viewmodel.User
 import com.gruppe2.delingsapp.ui.navigation.routes.ScreenRoutes
+import com.gruppe2.delingsapp.ui.screens.productScreens.ReserveProductScreen
 import kotlinx.coroutines.launch
 
 @Composable

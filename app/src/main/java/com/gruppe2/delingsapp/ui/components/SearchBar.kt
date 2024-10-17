@@ -1,4 +1,4 @@
-package com.gruppe2.delingsapp.components
+package com.gruppe2.delingsapp.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
