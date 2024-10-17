@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.gruppe2.delingsapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.gruppe2.delingsapp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
