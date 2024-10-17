@@ -102,6 +102,7 @@ class ProductViewModel : ViewModel() {
         }
     }
 
+    // TODO: Slå sammen getAllPoducts og fetchAllProducts
     suspend fun getAllProducts(): List<Product> {
         return try {
             val result = db.collection("Products").get().await()
@@ -121,6 +122,7 @@ class ProductViewModel : ViewModel() {
             }
             .addOnFailureListener { e: Exception ->
                 println("Feil ved henting av produkter: ${e.message}")
+                _products.value = emptyList()
             }
     }
 
