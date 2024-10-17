@@ -32,7 +32,7 @@ fun SearchScreen(
     val filteredProducts by searchViewModel.filteredProducts.collectAsState()
 
     LaunchedEffect(query) {
-        //productViewModel.fetchAllProducts()
+        productViewModel.fetchAllProducts()
         searchViewModel.onSearchQueryChanged(query)
         searchViewModel.triggerSearch()
     }
@@ -58,8 +58,9 @@ fun SearchScreen(
             contentAlignment = Alignment.TopCenter
         ) {
             if (filteredProducts.isNotEmpty()) {
+                // TODO: Bytt ut med Google Maps
                 Image(
-                    painter = painterResource(id = R.drawable.map_background_image), // Erstatt med din lokale kartbakgrunn
+                    painter = painterResource(id = R.drawable.map_background_image),
                     contentDescription = "Map Background",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop

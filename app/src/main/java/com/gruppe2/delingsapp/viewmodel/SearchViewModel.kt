@@ -11,7 +11,7 @@ class SearchViewModel(
 ) : ViewModel() {
 
     // Eksempel på produkter
-    val _products = listOf(
+    /*val _products = listOf(
         Product(
             name = "Mountain Bike",
             ownerId = "John Doe",
@@ -48,7 +48,7 @@ class SearchViewModel(
             location = "Stavanger",
             category = "Water Sports",
         )
-    )
+    )*/
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
@@ -56,7 +56,7 @@ class SearchViewModel(
     private val _triggerSearch = MutableSharedFlow<Unit>()
 
     // Databasesøk ->
-    /*val filteredProducts: StateFlow<List<Product>> = combine(
+    val filteredProducts: StateFlow<List<Product>> = combine(
         productViewModel.products,
         _triggerSearch
     ) { products, _ ->
@@ -68,8 +68,8 @@ class SearchViewModel(
                 product.name.contains(query, ignoreCase = true) ||
                         product.description.contains(query, ignoreCase = true) ||
                         product.category.contains(query, ignoreCase = true) ||
-                        product.location.contains(query, ignoreCase = true) ||
-                        product.owner.contains(query, ignoreCase = true)
+                        product.location.contains(query, ignoreCase = true)
+                        //product.owner.contains(query, ignoreCase = true)
             }
         }
     }
@@ -77,10 +77,10 @@ class SearchViewModel(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList()
-        )*/
+        )
 
     // Eksempelliste søk ->
-    val filteredProducts: StateFlow<List<Product>> = _triggerSearch
+    /*val filteredProducts: StateFlow<List<Product>> = _triggerSearch
         .flatMapLatest {
             val query = _searchQuery.value
             flowOf(
@@ -101,7 +101,7 @@ class SearchViewModel(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = emptyList()
-        )
+        )*/
 
     fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.update { newQuery }
