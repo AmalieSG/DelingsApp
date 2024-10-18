@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val userViewModel: UserViewModel = viewModel()  // Del UserViewModel mellom skjermene
-            val advertisementViewModel: AdvertisementViewModel<Any?> = viewModel() // asn testing impl
+            val advertisementViewModel: AdvertisementViewModel = viewModel() // asn testing impl
             val productViewModel: ProductViewModel = viewModel()
 
             // Kall AppNavHost og send inn både navController og userViewModel

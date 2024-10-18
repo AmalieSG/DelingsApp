@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
@@ -26,35 +29,18 @@ import androidx.navigation.NavController
 import com.gruppe2.delingsapp.viewmodel.User
 import com.gruppe2.delingsapp.viewmodel.AdvertisementViewModel
 
-
+/* This screen allows users to fill in the details for creating an advertisement.
+The form includes text fields for the title, description,
+location (with optional Google Maps API or Nominatim API integration),
+category selection, product selection, and availability dates.
+ */
 
 /*@Composable
-fun AdvertisementScreen(username: String?, navController: NavController, advertisementViewModel: AdvertisementViewModel) {
-    //var advertisement by remember { mutableStateOf(Advertisement("", "", "", "", " ", " ", products = , photos = ))}
-    var advertisement by remember { mutableStateOf(CreateAdvertisement("", "",  products = , photos = ))}
-
-    //var user by remember { mutableStateOf<User?>(null) }
-    //var adName by remember { mutableStateOf(TextFieldValue()) }
-    //var description by remember { mutableStateOf(TextFieldValue()) }
-    //var location by remember { mutableStateOf(TextFieldValue()) }
-    //var category by remember { mutableStateOf("General") }
-    //val selectedProducts = remember { mutableStateListOf<Product>() } // TODO: Andrea holder på med denne komponenten.
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-     */
-
-@JvmOverloads
-@Composable
 fun AdvertisementScreen(
     navController: NavController,
-    viewModel: AdvertisementViewModel<Any?> = hiltViewModel() // benytter hiltViewModel for å sikre såkalt "lifecycle" i dette scopet (Asn)
+    viewModel: AdvertisementViewModel = hiltViewModel()
+    //viewModel: AdvertisementViewModel<Any?> = hiltViewModel() // benytter hiltViewModel for å sikre såkalt "lifecycle" i dette scopet (Asn)
+
 ) {
     Column {
         TextField(
@@ -96,6 +82,75 @@ fun AdvertisementScreen(
         }
 
         // Calendar picker for availability (start date and end date)
+        Button(onClick = { /* logic to show date picker */ }) {
+            Text("Set Availability")
+        }
+
+        // Button to create advertisement
+        Button(onClick = {
+            viewModel.createAdvertisement(
+                onSuccess = { navController.popBackStack() },
+                onFailure = { exception -> /* Show error */ }
+            )
+        }) {
+            Text("Create Advertisement")
+        }
+    }
+}
+
+*/
+
+
+
+fun DropdownMenuItem(onClick: () -> Unit, interactionSource: @Composable () -> Unit) {
+
+}
+
+@Composable
+fun AdvertisementScreen(
+    navController: NavController,
+    viewModel: AdvertisementViewModel = hiltViewModel() // benytter hiltViewModel for å sikre såkalt "lifecycle" i dette scopet - såkalt Dependency Injection(Asn)
+) {
+    Column {
+        TextField(
+            value = viewModel.title,
+            onValueChange = { viewModel.title = it },
+            label = { Text("Title") }
+        )
+
+        TextField(
+            value = viewModel.description,
+            onValueChange = { viewModel.description = it },
+            label = { Text("Description") }
+        )
+
+        // Location selection (simplified for now) TODO: Ad.Location: string -> nominatim / maps
+        TextField(
+            value = viewModel.location,
+            onValueChange = { viewModel.location = it },
+            label = { Text("Location") }
+        )
+
+        // Dropdown for category selection TODO: Ad.DropDown category select (asn)
+        DropdownMenu(
+            expanded = /* logic for expanded state */,
+            onDismissRequest = { /* logic to close */ }
+        ) {
+            listOf("Electronics", "Furniture", "Vehicles").forEach { categoryOption ->
+                DropdownMenuItem(onClick = { viewModel.category = categoryOption }) {
+                    Text(categoryOption)
+                }
+            }
+        }
+
+        // Display products from user's inventory (simulated here)
+        LazyColumn {
+            items(viewModel.selectedProducts) { product ->
+                Text(product.name)
+            }
+        }
+
+        // Calendar picker for availability (start date and end date) TODO: Ad.CalenderPick (asn)
         Button(onClick = { /* logic to show date picker */ }) {
             Text("Set Availability")
         }

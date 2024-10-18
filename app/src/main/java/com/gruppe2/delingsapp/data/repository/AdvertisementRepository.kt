@@ -4,6 +4,9 @@ import androidx.compose.runtime.mutableStateListOf
 import com.gruppe2.delingsapp.data.model.Product
 
 class AdvertisementRepository {
+    fun addAdvertisement(advertisement: AdvertisementModel): Any {
+
+    }
 
     // Initial sample data for products ( Dummy data)
     val sampleProducts = mutableStateListOf(

@@ -35,7 +35,7 @@ fun AppNavHost(
     navController: NavHostController,
     userViewModel: UserViewModel,
     productViewModel: ProductViewModel,
-    advertisementViewModel: AdvertisementViewModel<Any?>, //Asn testing
+    advertisementViewModel: AdvertisementViewModel, //Asn testing
     modifier: Modifier = Modifier,
 ) {
     val bottomNavItems = listOf(
@@ -68,7 +68,7 @@ fun AppNavHost(
                 ProfileScreen(username, userViewModel, navController)
             }
             composable(ScreenRoutes.Advertisement.route) {
-                AdvertisementScreen("", navController, advertisementViewModel)
+                AdvertisementScreen( navController, advertisementViewModel)
             }
 
             /*composable(ScreenRoutes.Advertisement.route) { backStackEntry ->
