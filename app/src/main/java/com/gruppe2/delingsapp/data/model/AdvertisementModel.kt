@@ -2,15 +2,18 @@ package com.gruppe2.delingsapp.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.firebase.firestore.auth.User
+import com.gruppe2.delingsapp.viewmodel.UserViewModel
 import kotlinx.parcelize.Parcelize
+import java.util.UUID
 
 
 // Data model for Advertisement
 // bruke parcelize for  å slippe boiler plate kode: https://developer.android.com/kotlin/parcelize
 @Parcelize
 data class AdvertisementModel(
-    val id: String = "", // Unique identifier for the advertisement
-    val owner: String = "", // User ID of the owner creating the advertisement
+    val id: UUID, // Unique identifier for the advertisement
+    val owner: User.Id = "", // User ID of the owner creating the advertisement
     val title: String = "", // Title of the advertisement
     val description: String = "", // Description of the advertisement
     val location: String = "", // Location of the item being advertised
