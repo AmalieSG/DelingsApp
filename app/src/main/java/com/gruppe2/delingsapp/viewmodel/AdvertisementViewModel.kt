@@ -1,12 +1,10 @@
 package com.gruppe2.delingsapp.viewmodel
 
-import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
-import com.gruppe2.delingsapp.data.model.AdvertisementModel
-import com.gruppe2.delingsapp.data.model.Product
-import com.gruppe2.delingsapp.data.repository.AdvertisementRepository
-import com.gruppe2.delingsapp.shared.model.Product.AuthRepository
-import java.util.UUID
+import androidx.lifecycle.viewModelScope
+import com.gruppe2.delingsapp.domain.advertisement.CreateAdvertisementUseCaseImpl
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 /* The ViewModel will handle the logic of retrieving and managing the data.
@@ -17,9 +15,11 @@ it in a way that the UI can display.
 
 // Versjon - enkel, men bruker parcelize i Adv.Model
 
-class AdvertisementViewModel(
-    private val advertisementRepository: AdvertisementRepository,
-    private val authRepository: AuthRepository // For checking if user is authenticated
+/* class AdvertisementViewModel(
+    //private val advertisementRepository: AdvertisementRepository,
+    // private val authRepository: AuthRepository // For checking if user is authenticated
+    // kastet ut funksjon for å createAdvertisement i en CreateAdvertisementUseCase,
+    private val createAdvertisementUseCase: CreateAdvertisementUseCase
 ) : ViewModel() {
 
     var title by mutableStateOf("")
@@ -29,11 +29,11 @@ class AdvertisementViewModel(
     var selectedProducts = mutableStateListOf<Product>()
     var availability by mutableStateOf<Pair<String, String>?>(null) // Start and end dates
 
-    // Function to create an advertisement
+    // using function from Create advertisementUseCase as Injection in this ViewModel
     fun createAdvertisement(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        if (authRepository.isUserSignedIn()) {
-            val productsList = if (selectedProducts.isEmpty()) null else selectedProducts.toList() // Handle empty selection
-            val advertisement = AdvertisementModel(
+        /* if (authRepository.isUserSignedIn()) -> håndterer dette i CreateAdUseCase
+            //val productsList = if (selectedProducts.isEmpty()) null else selectedProducts.toList() // Handle empty selection
+            //val advertisement = AdvertisementModel(
                 id = UUID.randomUUID(),
                 owner = authRepository.getCurrentUserId(),
                 title = title,
@@ -42,12 +42,29 @@ class AdvertisementViewModel(
                 category = category,
                 products = selectedProducts.toList(), // Optional; å velge produkter fra liste. Sender en tom liste til AdvertisementViewModel, dersom ingen produkter er valgt.
                 availability = availability
-            )
-            advertisementRepository.addAdvertisement(advertisement)
+
+                 dvertisementRepository.addAdvertisement(advertisement)
                 .addOnSuccessListener { onSuccess() }
-                .addOnFailureListener { exception -> onFailure(exception) }
+                .addOnFailureListener(onFailure)
         } else {
             onFailure(Exception("User not signed in"))
+        }
+
+            )*/
+        viewModelScope.launch {
+            val result = createAdvertisementUseCase.execute(
+                title = title,
+                description = description,
+                location = location,
+                category = category,
+                selectedProducts = selectedProducts,
+                availability = availability
+            )
+
+            result.fold(
+                onSuccess = { onSuccess() },
+                onFailure = { exception -> onFailure(exception as Exception) }
+            )
         }
     }
 
@@ -78,7 +95,7 @@ class AdvertisementViewModel(
     }
 
     // Function som brukes i "ProductSelectionScreen" for å hente en brukers liste med produkter
-    fun getMyProducts(): Int {
+    fun getMyProducts() {
     // TODO: Implementer en funksjon som henter produkter som er lagt til i min liste.
     }
 }
@@ -90,7 +107,7 @@ private fun Any.addOnFailureListener(any: Any) {
 private fun Any.addOnSuccessListener(function: () -> Unit): Any {
     TODO("Not yet implemented")
 }
-
+*/
 
 /*
 // Denne versjonen henter inn CreateAdvUsecase
@@ -139,6 +156,38 @@ class AdvertisementViewModel(
 
  */
 
+
+
+//Denne versjonen håndterer kommunikasjon melllom UI og domain layer (use cases).
+// Holder ikke på noe businesslogikk, men sender input fra UI -> Domain Layer
+@AdvertisementViewModel.HiltViewModel
+class AdvertisementViewModel @Inject constructor(
+    private val createAdvertisementUseCase: CreateAdvertisementUseCaseImpl
+) : ViewModel() {
+    annotation class HiltViewModel
+
+    fun createAdvertisement(
+        title: String,
+        description: String,
+        location: String,
+        category: String,
+        selectedProducts: List<com.gruppe2.delingsapp.viewmodel.Product>,
+        availability: Pair<String, String>?,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        viewModelScope.launch {
+            val result = createAdvertisementUseCase.execute(
+                title, description, location, category, selectedProducts, availability
+            )
+            if (result.isSuccess) {
+                onSuccess()
+            } else {
+                onFailure(result.exceptionOrNull()!! as Exception)
+            }
+        }
+    }
+}
 
 
 

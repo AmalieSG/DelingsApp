@@ -2,8 +2,7 @@ package com.gruppe2.delingsapp.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.firebase.firestore.auth.User
-import com.gruppe2.delingsapp.viewmodel.UserViewModel
+import com.gruppe2.delingsapp.viewmodel.Product
 import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 import java.util.UUID
@@ -14,7 +13,7 @@ import java.util.UUID
 @Parcelize
 data class AdvertisementModel(
     val id: UUID, // Unique identifier for the advertisement
-    // val id: String = "", //Midlertidig løsning
+    //val id: String = "", //Midlertidig løsning
     val owner: String = "", // User ID of the owner creating the advertisement //TODO: knytte opp med UserID (asn)
     val title: String = "", // Title of the advertisement
     val description: String = "", // Description of the advertisement

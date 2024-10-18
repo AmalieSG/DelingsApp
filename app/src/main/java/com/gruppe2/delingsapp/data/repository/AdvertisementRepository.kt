@@ -1,6 +1,7 @@
 package com.gruppe2.delingsapp.data.repository
 
 import androidx.compose.runtime.mutableStateListOf
+import com.gruppe2.delingsapp.data.model.AdvertisementModel
 import com.gruppe2.delingsapp.data.model.Product
 
 class AdvertisementRepository {

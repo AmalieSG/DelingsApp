@@ -8,7 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.gruppe2.delingsapp.viewmodel.AdvertisementViewModel
+import com.gruppe2.delingsapp.viewmodel.Product
 
+
+// Tar i mot Input fra UI og sender til AdvertisementViewModel
 @Composable
 fun CreateAdvertisementScreen(
     viewModel: AdvertisementViewModel, // Provided by Hilt/DI or manually injected
