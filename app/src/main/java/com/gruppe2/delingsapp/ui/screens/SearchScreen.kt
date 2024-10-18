@@ -1,8 +1,9 @@
-package com.example.myapplication.ui.screens
+package com.gruppe2.delingsapp.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -11,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gruppe2.delingsapp.ui.components.ProductCard
-import com.example.myapplication.viewmodel.SearchViewModel
-import com.example.myapplication.components.SearchBar
+import com.gruppe2.delingsapp.viewmodel.SearchViewModel
+import com.gruppe2.delingsapp.ui.components.SearchBar
 
 @Composable
 fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens
+package com.gruppe2.delingsapp.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -11,7 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.myapplication.R
+import com.gruppe2.delingsapp.R
 
 @Composable
 fun PaymentOptionsScreen(navController: NavController) {

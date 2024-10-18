@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateListOf
 import com.gruppe2.delingsapp.ui.components.Product
 import com.google.firebase.firestore.FirebaseFirestore
-//import com.example.myapplication.components.Product
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await

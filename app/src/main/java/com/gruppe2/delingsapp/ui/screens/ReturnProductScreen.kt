@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.screens
+package com.gruppe2.delingsapp.ui.screens
 
 import android.app.Activity
 import android.content.Intent
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.LocalContext
-import com.example.myapplication.R
+import com.gruppe2.delingsapp.R
 @Composable
 fun ReturnProductPage(navController: NavController) {
     var imageUri by remember { mutableStateOf<Uri?>(null) } // State for holding the image URI

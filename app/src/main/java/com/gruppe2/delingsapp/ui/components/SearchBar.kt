@@ -1,4 +1,4 @@
-package com.example.myapplication.components
+package com.gruppe2.delingsapp.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

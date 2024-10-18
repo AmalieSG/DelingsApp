@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
-import com.example.myapplication.navigation.routes.NavbarRoutes
+import com.gruppe2.delingsapp.ui.navigation.routes.NavbarRoutes
 
 data class BottomNavItem(
     val title: String,

@@ -1,6 +1,6 @@
 package com.gruppe2.delingsapp.ui.screens.advertisement
 
-
+/*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -73,3 +73,4 @@ fun AddProductScreen() {
         }
     }
 }
+ */

@@ -61,7 +61,7 @@ fun ProductScreen(productName: String?, navController: NavController, productVie
         if (productName != null) {
             val result = productViewModel.getProduct(productName)
             if (result != null) {
-                product = result
+                product = result // TODO: Sjekke ut hvordan dette skal løses riktig. (Løsning: Oskar fikset i sin versjon på fredag)
             } else {
                 println("Kunne ikke finne produkt")
             }

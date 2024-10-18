@@ -1,10 +1,10 @@
-package com.example.myapplication.viewmodel
+package com.gruppe2.delingsapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import com.example.myapplication.components.Product
+import com.gruppe2.delingsapp.components.Product
 import kotlinx.coroutines.flow.Flow
 
 class SearchViewModel : ViewModel() {

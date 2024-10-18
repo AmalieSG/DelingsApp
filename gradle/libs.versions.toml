@@ -22,6 +22,7 @@ firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.1.0"
 firebaseMessagingKtx = "24.0.2"
 foundationLayoutAndroid = "1.6.6"
+playServicesAnalyticsImpl = "18.1.0"
 
 
 [libraries]
@@ -56,6 +57,7 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
 #androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
+play-services-analytics-impl = { group = "com.google.android.gms", name = "play-services-analytics-impl", version.ref = "playServicesAnalyticsImpl" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gruppe2.delingsapp.viewmodel.UserViewModel
 import java.util.regex.Pattern
-//import com.gruppe2.delingsapp.viewmodel.UserViewModel
 
 
 @Composable

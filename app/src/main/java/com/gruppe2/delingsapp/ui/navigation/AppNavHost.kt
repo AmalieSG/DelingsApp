@@ -7,6 +7,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.gruppe2.delingsapp.ui.screens.PaymentOptionsScreen
+import com.gruppe2.delingsapp.ui.screens.ReturnProductPage
+//import com.gruppe2.delingsapp.ui.screens.VippsPaymentScreen
+import com.gruppe2.delingsapp.ui.screens.VisaPaymentScreen
+import com.gruppe2.delingsapp.screens.VippsPaymentScreen
+//import com.gruppe2.delingsapp.screens.VippsPaymentScreen
 import com.gruppe2.delingsapp.ui.CameraActivity
 import com.gruppe2.delingsapp.ui.screens.*
 import com.gruppe2.delingsapp.ui.navigation.routes.NavbarRoutes
@@ -19,17 +25,22 @@ import com.gruppe2.delingsapp.ui.screens.HomePage
 import com.gruppe2.delingsapp.ui.screens.LoginScreen
 import com.gruppe2.delingsapp.ui.screens.ProfileScreen
 import com.gruppe2.delingsapp.ui.screens.RegisterScreen
+//import com.gruppe2.delingsapp.ui.screens.advertisement.AdvertisementViewModel
+import com.gruppe2.delingsapp.ui.screens.advertisement.AdvertisementScreen
 import com.gruppe2.delingsapp.viewmodel.UserViewModel
+import com.gruppe2.delingsapp.viewmodel.AdvertisementViewModel
 
 @Composable
 fun AppNavHost(
     navController: NavHostController,
     userViewModel: UserViewModel,
     productViewModel: ProductViewModel,
-    modifier: Modifier = Modifier
+    advertisementViewModel: AdvertisementViewModel<Any?>, //Asn testing
+    modifier: Modifier = Modifier,
 ) {
     val bottomNavItems = listOf(
         NavbarRoutes.Home,
+        NavbarRoutes.Advertisement, // asn testing
         NavbarRoutes.Login,
         NavbarRoutes.Profile,
         NavbarRoutes.Register,
@@ -56,6 +67,15 @@ fun AppNavHost(
                 val username = backStackEntry.arguments?.getString("username")
                 ProfileScreen(username, userViewModel, navController)
             }
+            composable(ScreenRoutes.Advertisement.route) {
+                AdvertisementScreen("", navController, advertisementViewModel)
+            }
+
+            /*composable(ScreenRoutes.Advertisement.route) { backStackEntry ->
+                val username = backStackEntry.arguments?.getString("username")
+                AdvertisementScreen(username, navController, advertisementViewModel)
+            } */
+
            // composable(ScreenRoutes.Product.route) {  backStackEntry ->
               //  val productName = backStackEntry.arguments?.getString("productName")
                // ProductScreen(productName, navController, productViewModel)
