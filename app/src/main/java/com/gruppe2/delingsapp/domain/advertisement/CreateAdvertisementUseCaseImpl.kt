@@ -33,7 +33,7 @@ class CreateAdvertisementUseCaseImpl @Inject constructor(
             return Result.failure(IllegalArgumentException("All fields must be filled"))
         }
 
-        // Create local var userID and check if user is signed in
+        // Lage en lokal var userId som gjenbrukes, and check if user is signed in
         val userId = authRepository.getCurrentUserId() // Make sure user is logged in
             ?: return Result.failure(IllegalStateException("User not logged in"))
 
@@ -47,8 +47,13 @@ class CreateAdvertisementUseCaseImpl @Inject constructor(
             category = category,
             products = selectedProducts,
             availability = availability
+            // TODO: over hele linja, legge til: photos = emptyList() // HVis bilde upload gjøres separat
         )
-        //return advertisementRepository.addAdvertisement(ad)
+
+        return advertisementRepository.ad
+
+
+        //Gammel: return advertisementRepository.addAdvertisement(ad)
 
         // Call repository to save advertisement
         return try {
