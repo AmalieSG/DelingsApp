@@ -2,6 +2,7 @@ package com.gruppe2.delingsapp.ui.screens.advertisement
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.runtime.Composable
@@ -11,6 +12,7 @@ import androidx.navigation.NavController
 //import com.gruppe2.delingsapp.data.model.AdvertisementModel
 //import com.gruppe2.delingsapp.data.model.Product
 import com.gruppe2.delingsapp.viewmodel.AdvertisementViewModel
+import com.gruppe2.delingsapp.domain.advertisement.CreateAdvertisementUseCaseImpl
 
 /* This screen allows users to fill in the details for creating an advertisement.
 The form includes text fields for the title, description,
@@ -89,10 +91,14 @@ fun DropdownMenuItem(onClick: () -> Unit, interactionSource: @Composable () -> U
 
 }
 
+
+
 @Composable
-fun AdvertisementScreen(
+fun AdvertisementScreen(username:String?,
     navController: NavController,
-    viewModel: AdvertisementViewModel = hiltViewModel() // benytter hiltViewModel for å sikre såkalt "lifecycle" i dette scopet - såkalt Dependency Injection(Asn)
+ // viewModel: AdvertisementViewModel.HiltViewModel // benytter hiltViewModel for å sikre såkalt "lifecycle" i dette scopet - såkalt Dependency Injection(Asn)
+    viewModel: AdvertisementViewModel  // benytter hiltViewModel for å sikre såkalt "lifecycle" i dette scopet - såkalt Dependency Injection(Asn)
+
 ) {
     Column {
         TextField(
@@ -114,8 +120,15 @@ fun AdvertisementScreen(
             label = { Text("Location") }
         )
 
+        TextField(
+            value = viewModel.category,
+            onValueChange = { viewModel.category = it },
+            label = { Text("Location") }
+        )
+
         // Dropdown for category selection TODO: Ad.DropDown category select (asn)
-        DropdownMenu(
+
+       /* DropdownMenu(
             expanded = /* logic for expanded state */,
             onDismissRequest = { /* logic to close */ }
         ) {
@@ -123,7 +136,7 @@ fun AdvertisementScreen(
                 DropdownMenuItem(onClick = { viewModel.category = categoryOption }) {
                     Text(categoryOption)
                 }
-            }
+            }*/
         }
 
         // Display products from user's inventory (simulated here)
@@ -139,16 +152,21 @@ fun AdvertisementScreen(
         }
 
         // Button to create advertisement
-        Button(onClick = {
+        /*Button(onClick = {
             viewModel.createAdvertisement(
                 onSuccess = { navController.popBackStack() },
                 onFailure = { exception -> /* Show error */ }
             )
-        }) {
+        })  {
+
+         */
             Text("Create Advertisement")
         }
-    }
+   /* }
 }
+
+    */
+
 
 
 

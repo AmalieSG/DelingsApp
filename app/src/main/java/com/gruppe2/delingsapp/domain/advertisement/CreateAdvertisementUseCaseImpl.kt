@@ -50,7 +50,7 @@ class CreateAdvertisementUseCaseImpl @Inject constructor(
             // TODO: over hele linja, legge til: photos = emptyList() // HVis bilde upload gjøres separat
         )
 
-        return advertisementRepository.ad
+        //return advertisementRepository.ad
 
 
         //Gammel: return advertisementRepository.addAdvertisement(ad)

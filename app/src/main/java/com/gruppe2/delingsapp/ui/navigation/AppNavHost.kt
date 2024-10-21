@@ -27,6 +27,7 @@ import com.gruppe2.delingsapp.ui.screens.ProfileScreen
 import com.gruppe2.delingsapp.ui.screens.RegisterScreen
 //import com.gruppe2.delingsapp.ui.screens.advertisement.AdvertisementViewModel
 import com.gruppe2.delingsapp.ui.screens.advertisement.AdvertisementScreen
+import com.gruppe2.delingsapp.ui.screens.advertisement.CreateAdvertisementScreen
 import com.gruppe2.delingsapp.viewmodel.UserViewModel
 import com.gruppe2.delingsapp.viewmodel.AdvertisementViewModel
 
@@ -40,7 +41,8 @@ fun AppNavHost(
 ) {
     val bottomNavItems = listOf(
         NavbarRoutes.Home,
-        NavbarRoutes.Advertisement, // asn testing
+        //NavbarRoutes.Advertisement, // asn testing
+        NavbarRoutes.CreateAdvertisement,
         NavbarRoutes.Login,
         NavbarRoutes.Profile,
         NavbarRoutes.Register,
@@ -67,14 +69,19 @@ fun AppNavHost(
                 val username = backStackEntry.arguments?.getString("username")
                 ProfileScreen(username, userViewModel, navController)
             }
-            composable(ScreenRoutes.Advertisement.route) {
-                AdvertisementScreen( navController, advertisementViewModel)
+            /*composable(ScreenRoutes.Advertisement.route) { backStackEntry ->
+               val username = backStackEntry.arguments?.getString("username")
+               AdvertisementScreen(username, navController, advertisementViewModel)
+           } */
+
+            composable(ScreenRoutes.CreateAdvertisement.route) { backStackEntry ->
+                val username = backStackEntry.arguments?.getString("")
+               //CreateAdvertisementScreen(username, navController, advertisementViewModel)
+                CreateAdvertisementScreen()
+
             }
 
-            /*composable(ScreenRoutes.Advertisement.route) { backStackEntry ->
-                val username = backStackEntry.arguments?.getString("username")
-                AdvertisementScreen(username, navController, advertisementViewModel)
-            } */
+
 
            // composable(ScreenRoutes.Product.route) {  backStackEntry ->
               //  val productName = backStackEntry.arguments?.getString("productName")
@@ -128,4 +135,8 @@ fun AppNavHost(
 
 
     }
+}
+
+fun CreateAdvertisementScreen() {
+    TODO("Not yet implemented")
 }

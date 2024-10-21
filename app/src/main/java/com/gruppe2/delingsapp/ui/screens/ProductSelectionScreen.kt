@@ -41,7 +41,9 @@ fun ProductSelectionScreen(viewModel: AdvertisementViewModel) {
 }
 */
 
-@Composable
+/* @Composable
+
+// TODO: ASN MANDAG, tmp kommentert ut
 fun ProductSelectionScreen(viewModel: AdvertisementViewModel) {
     val allProducts = getUserProducts() // Function to fetch user's "My Products"
     val selectedProducts = viewModel.selectedProducts
@@ -84,7 +86,7 @@ fun ProductItem(product: Product, isSelected: Boolean, onCheckedChange: (Boolean
             onCheckedChange = onCheckedChange
         )
     }
-}
+} */
 
 
 

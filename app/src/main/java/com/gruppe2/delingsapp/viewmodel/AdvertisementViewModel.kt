@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+
 /* The ViewModel will handle the logic of retrieving and managing the data.
 It communicates with a repository to get the list of advertisements and prepares
 it in a way that the UI can display.
@@ -160,18 +161,20 @@ class AdvertisementViewModel(
 
 //Denne versjonen håndterer kommunikasjon melllom UI og domain layer (use cases).
 // Holder ikke på noe businesslogikk, men sender input fra UI -> Domain Layer
-@AdvertisementViewModel.HiltViewModel
+//@AdvertisementViewModel.HiltViewModel
 class AdvertisementViewModel @Inject constructor(
-    private val createAdvertisementUseCase: CreateAdvertisementUseCaseImpl
+    private val createAdvertisementUseCase: CreateAdvertisementUseCaseImpl,
+    var title: String, var description: String, var location: String, var category: String, var selectedProducts: List<Product>, var availability: Pair<String, String>?
 ) : ViewModel() {
-    annotation class HiltViewModel
+    //var category: String
+
 
     fun createAdvertisement(
         title: String,
         description: String,
         location: String,
         category: String,
-        selectedProducts: List<com.gruppe2.delingsapp.viewmodel.Product>,
+        selectedProducts: List<Product>,
         availability: Pair<String, String>?,
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit

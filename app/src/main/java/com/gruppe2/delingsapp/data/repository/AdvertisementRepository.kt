@@ -7,6 +7,7 @@ import com.gruppe2.delingsapp.data.model.Product
 class AdvertisementRepository {
     fun addAdvertisement(advertisement: AdvertisementModel): Any {
 
+        return TODO("Provide the return value")
     }
 
     // Initial sample data for products ( Dummy data)
