@@ -1,5 +1,4 @@
-package com.gruppe2.delingsapp.ui.screens/*package com.example.myapplication.ui.screens */
-//package com.example.myapplication.ui.screens
+package com.gruppe2.delingsapp.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -21,26 +20,25 @@ import androidx.navigation.NavController
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
-fun MessageScreen(navController: NavController, currentUserId: String, recipientUserId: String) {
+fun MessageScreen(currentUserId: String, recipientUserId: String) {
     val db = FirebaseFirestore.getInstance()
     val chatId = getChatId(currentUserId, recipientUserId)
 
-    // States for meldingene
     var messages by remember { mutableStateOf(listOf<Message>()) }
     var newMessage by remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
 
-    // Hente meldinger fra Firebase Firestore
     LaunchedEffect(chatId) {
         db.collection("chats").document(chatId).collection("messages")
             .orderBy("timestamp", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error == null) {
-                    // Henter alle meldinger fra chatten uten ekstra filtrering
-                    messages = snapshot?.documents?.mapNotNull { it.toObject(Message::class.java) }
-                        ?: emptyList()
+                    messages = snapshot?.documents?.mapNotNull { it.toObject(Message::class.java) } ?: emptyList()
                     Log.d("ChatMessages", "Fetched messages: $messages")
                 }
             }
@@ -52,10 +50,10 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
             modifier = Modifier
                 .weight(1f)
                 .padding(8.dp),
-            reverseLayout = true
+            reverseLayout = false // Show latest messages at the bottom
         ) {
             items(messages) { message ->
-                MessageItem(message, currentUserId)
+                MessageItem(message, currentUserId, messages)
             }
         }
 
@@ -66,7 +64,7 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
                 scope.launch {
                     if (newMessage.text.isNotEmpty()) {
                         sendMessage(db, chatId, currentUserId, newMessage.text)
-                        newMessage = TextFieldValue("")
+                        newMessage = TextFieldValue("") // Clear input after sending
                     }
                 }
             }
@@ -75,8 +73,27 @@ fun MessageScreen(navController: NavController, currentUserId: String, recipient
 }
 
 @Composable
-fun MessageItem(message: Message, currentUserId: String) {
+fun MessageItem(message: Message, currentUserId: String, messages: List<Message>) {
     val isSentByCurrentUser = message.sender == currentUserId
+
+    // Get the date for the current message
+    val currentMessageDate = formatDate(message.timestamp)
+    // Get the date for the previous message if it exists
+    val previousMessageDate = if (messages.indexOf(message) > 0) {
+        formatDate(messages[messages.indexOf(message) - 1].timestamp)
+    } else {
+        ""
+    }
+
+    // Show date only if it's different from the previous message's date
+    if (currentMessageDate != previousMessageDate) {
+        Text(
+            text = currentMessageDate,
+            fontSize = 14.sp,
+            color = Color.Gray,
+            modifier = Modifier.padding(vertical = 4.dp) // Add some padding for the date
+        )
+    }
 
     Row(
         horizontalArrangement = if (isSentByCurrentUser) Arrangement.End else Arrangement.Start,
@@ -97,7 +114,7 @@ fun MessageItem(message: Message, currentUserId: String) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "kl. ${message.timestamp}",
+                text = formatTimestamp(message.timestamp),
                 fontSize = 12.sp,
                 color = Color.Gray
             )
@@ -117,13 +134,6 @@ fun MessageInputSection(
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Plus-ikon for å legge til filer (kan utvides senere)
-        IconButton(onClick = { /* Add functionality to attach files */ }) {
-            //TODO: importere icons (asn)
-            Icon(Icons.Default.Add, contentDescription = "Add file")
-        }
-
-        // Meldingsinputfelt
         BasicTextField(
             value = newMessage,
             onValueChange = onMessageChange,
@@ -133,8 +143,6 @@ fun MessageInputSection(
                 .background(Color.LightGray)
                 .padding(8.dp)
         )
-
-        // Send-knapp
         Button(onClick = onSendClick) {
             Text("Send")
         }
@@ -145,20 +153,37 @@ fun MessageInputSection(
 data class Message(
     val sender: String = "",
     val text: String = "",
-    val timestamp: String = ""
+    val timestamp: Timestamp = Timestamp.now() // Ensure timestamp is a Timestamp object
 )
 
-// Funksjon for å sende meldinger til Firestore
+// Function to send messages to Firestore
 fun sendMessage(db: FirebaseFirestore, chatId: String, senderId: String, messageText: String) {
     val newMessage = Message(
         sender = senderId,
         text = messageText,
-        timestamp = System.currentTimeMillis().toString()
+        timestamp = Timestamp.now() // Store timestamp as Timestamp
     )
     db.collection("chats").document(chatId).collection("messages").add(newMessage)
 }
 
-// Funksjon for å generere en unik ID for chatten basert på bruker-IDer
+// Function to generate a unique ID for the chat between two users
 fun getChatId(userId1: String, userId2: String): String {
     return if (userId1 < userId2) "$userId1$userId2" else "$userId2$userId1"
 }
+
+// Function to format timestamp
+fun formatTimestamp(timestamp: Timestamp): String {
+    val date = timestamp.toDate()
+    val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    hourFormat.timeZone = TimeZone.getTimeZone("CET") // Set timezone to CET
+    return hourFormat.format(date)
+}
+
+// Function to format date
+fun formatDate(timestamp: Timestamp): String {
+    val dateFormat = SimpleDateFormat("EEEE, d. MMMM", Locale.getDefault())
+    dateFormat.timeZone = TimeZone.getTimeZone("CET") // Set timezone to CET
+    return dateFormat.format(timestamp.toDate())
+}
+
+

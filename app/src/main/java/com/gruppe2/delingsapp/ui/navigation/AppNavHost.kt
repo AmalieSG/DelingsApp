@@ -3,16 +3,12 @@ package com.gruppe2.delingsapp.ui.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.gruppe2.delingsapp.ui.screens.PaymentOptionsScreen
-import com.gruppe2.delingsapp.ui.screens.ReturnProductPage
-//import com.gruppe2.delingsapp.ui.screens.VippsPaymentScreen
-import com.gruppe2.delingsapp.ui.screens.VisaPaymentScreen
-import com.gruppe2.delingsapp.screens.VippsPaymentScreen
-//import com.gruppe2.delingsapp.screens.VippsPaymentScreen
 import com.gruppe2.delingsapp.ui.CameraActivity
 import com.gruppe2.delingsapp.ui.screens.*
 import com.gruppe2.delingsapp.ui.navigation.routes.NavbarRoutes
@@ -29,6 +25,10 @@ import com.gruppe2.delingsapp.ui.screens.RegisterScreen
 import com.gruppe2.delingsapp.ui.screens.advertisement.AdvertisementScreen
 import com.gruppe2.delingsapp.ui.screens.advertisement.CreateAdvertisementScreen
 import com.gruppe2.delingsapp.viewmodel.UserViewModel
+import com.gruppe2.delingsapp.ui.screens.productScreens.AddProductScreen
+import com.gruppe2.delingsapp.ui.screens.productScreens.ProductScreen
+import com.gruppe2.delingsapp.ui.screens.productScreens.ReserveProductScreen
+import com.gruppe2.delingsapp.ui.screens.productScreens.UserProductsScreen
 import com.gruppe2.delingsapp.viewmodel.AdvertisementViewModel
 
 @Composable
@@ -39,19 +39,20 @@ fun AppNavHost(
     advertisementViewModel: AdvertisementViewModel, //Asn testing
     modifier: Modifier = Modifier,
 ) {
+    //Legg screens som skal vises i navbaren her.
     val bottomNavItems = listOf(
         NavbarRoutes.Home,
         //NavbarRoutes.Advertisement, // asn testing
         NavbarRoutes.CreateAdvertisement,
         NavbarRoutes.Login,
         NavbarRoutes.Profile,
-        NavbarRoutes.Register,
-        NavbarRoutes.Product
+        NavbarRoutes.ownedProducts,
+        NavbarRoutes.AddProduct
     )
 
     Scaffold(
         bottomBar = {
-            NavBar(navController = navController, items = bottomNavItems)
+            NavBar(navController = navController, items = bottomNavItems, userViewModel)
         }
     ) { innerPadding ->
         NavHost(
@@ -65,78 +66,98 @@ fun AppNavHost(
             composable(ScreenRoutes.Register.route) {
                 RegisterScreen(navController, userViewModel)
             }
+            composable(ScreenRoutes.AddProduct.route) {
+                val userId = userViewModel.currentUserId?:""
+                AddProductScreen(userId,navController, productViewModel)
+            }
+            composable(ScreenRoutes.ListProducts.route) {
+                UserProductsScreen(navController, productViewModel,userViewModel)
+            }
+            composable(ScreenRoutes.ReserveProduct.route) { backStackEntry ->
+                val productName = backStackEntry.arguments?.getString("productName")
+                ReserveProductScreen(productName,navController, productViewModel,userViewModel)
+            }
             composable(ScreenRoutes.Profile.route) { backStackEntry ->
                 val username = backStackEntry.arguments?.getString("username")
                 ProfileScreen(username, userViewModel, navController)
             }
-            /*composable(ScreenRoutes.Advertisement.route) { backStackEntry ->
+            composable(ScreenRoutes.Product.route) {  backStackEntry ->
+                val productName = backStackEntry.arguments?.getString("productName")
+                ProductScreen(productName, navController, productViewModel,userViewModel)
+            }
+
+            composable(ScreenRoutes.UpdateProduct.route) {  backStackEntry ->
+                val productName = backStackEntry.arguments?.getString("productName")
+                EditProductScreen(productName, navController, productViewModel,userViewModel)
+            }
+            /*
+            composable(ScreenRoutes.Advertisement.route) { backStackEntry ->
                val username = backStackEntry.arguments?.getString("username")
                AdvertisementScreen(username, navController, advertisementViewModel)
            } */
 
             composable(ScreenRoutes.CreateAdvertisement.route) { backStackEntry ->
                 val username = backStackEntry.arguments?.getString("")
-               //CreateAdvertisementScreen(username, navController, advertisementViewModel)
-                CreateAdvertisementScreen()
-
+                //CreateAdvertisementScreen(username, navController, advertisementViewModel, userViewModel)
+               // CreateAdvertisementScreen() // TODO:fiks, asn
             }
 
 
-
-           // composable(ScreenRoutes.Product.route) {  backStackEntry ->
-              //  val productName = backStackEntry.arguments?.getString("productName")
-               // ProductScreen(productName, navController, productViewModel)
-            //}
-            composable(ScreenRoutes.Product.route) {
-                ProductScreen("Slagdrill", navController, productViewModel)
-            }
-
-            composable(ScreenRoutes.UpdateProduct.route) {  backStackEntry ->
-                val productName = backStackEntry.arguments?.getString("productName")
-                EditProductScreen(productName, navController, productViewModel)
-        }
             composable(ScreenRoutes.Home.route) {
-                HomePage()
-            }
-            composable("chat/{recipientUserId}") { backStackEntry ->
-                val recipientUserId = backStackEntry.arguments?.getString("recipientUserId") ?: ""
-               // TODO: Sørge for å importerer MessageScreen / løse feil (asn)
-                MessageScreen(
+                HomePage(
                     navController = navController,
+                    //searchQuery = searchQuery.value,
+                    //onQueryChange = { searchQuery.value = it }
+                )
+            }
+
+            composable(ScreenRoutes.UserList.route) {
+                val currentUserId = userViewModel.currentUserId ?: ""
+                UserListScreen(navController, userViewModel, currentUserId)
+            }
+
+
+            composable(ScreenRoutes.Chat.route) { backStackEntry ->
+                val recipientUserId = backStackEntry.arguments?.getString("recipientUserId") ?: ""
+                MessageScreen(
                     currentUserId = userViewModel.currentUserId ?: "",
                     recipientUserId = recipientUserId
                 )
             }
 
-            composable("return_product") {
-                ReturnProductPage(navController)
+            composable(ScreenRoutes.ReturnProduct.route) {
+                ReturnProductScreen(navController)
             }
 
             // Route for PaymentOptionsScreen
-            composable("payment_options") {
+            composable(ScreenRoutes.PaymentOptions.route) {
                 PaymentOptionsScreen(navController)
             }
 
             // Route for VisaPaymentScreen, passing currentUserId
-            composable("visa_payment") {
+            composable(ScreenRoutes.VisaPayment.route) {
                 VisaPaymentScreen(navController)
             }
 
             // Route for VippsPaymentScreen, passing currentUserId
-            composable("vipps_payment") {
+            composable(ScreenRoutes.VippsPayment.route) {
                 VippsPaymentScreen(navController)
             }
 
-            composable("camera") {
+            composable(ScreenRoutes.Camera.route) {
                 CameraActivity()
             }
 
+            composable("search?query={query}") { backStackEntry ->
+                val query = backStackEntry.arguments?.getString("query") ?: ""
+                SearchScreen(productViewModel = productViewModel, query = query)
+            }
         }
 
 
     }
 }
 
-fun CreateAdvertisementScreen() {
-    TODO("Not yet implemented")
-}
+ /* fun CreateAdvertisementScreen() {
+    TODO("Not yet implemented") asn??
+} */

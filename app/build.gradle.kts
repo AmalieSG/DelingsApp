@@ -77,8 +77,7 @@ dependencies {
 
     // Debugging tools for Compose
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
-
-    // Other necessary dependencies
+    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -115,4 +114,10 @@ dependencies {
     implementation("androidx.camera:camera-view:${camerax_version}")
     implementation("androidx.camera:camera-extensions:${camerax_version}")
     implementation ("com.google.guava:guava:31.0.1-android")
+    implementation ("androidx.activity:activity-compose:1.6.1")
+    implementation ("androidx.compose.ui:ui:1.3.0")
+    implementation ("androidx.compose.material3:material3:1.0.0")
+    implementation (libs.firebase.storage.ktx)
+    implementation (libs.firebase.firestore.ktx)
+
 }
