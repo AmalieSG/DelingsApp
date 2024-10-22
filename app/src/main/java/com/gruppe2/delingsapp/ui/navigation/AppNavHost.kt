@@ -38,6 +38,7 @@ fun AppNavHost(
     //Legg screens som skal vises i navbaren her.
     val bottomNavItems = listOf(
         NavbarRoutes.Home,
+        NavbarRoutes.Annonse,
         NavbarRoutes.Login,
         NavbarRoutes.Profile,
         NavbarRoutes.ownedProducts,
