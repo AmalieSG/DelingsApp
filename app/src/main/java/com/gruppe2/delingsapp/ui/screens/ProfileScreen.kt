@@ -91,7 +91,12 @@ fun ProfileScreen(username: String?, userViewModel: UserViewModel, navController
                     navController
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                ProfileButton(text = "Mine annonser", onClick = { /* Handle ads */ }, navController)
+                ProfileButton(text = "Mine annonser", onClick = {
+                    navController.navigate("annonse") {
+                        popUpTo("annonse")
+                    }
+                }, navController)
+
                 Spacer(modifier = Modifier.height(16.dp))
                 ProfileButton(
                     text = "Definere responstid",

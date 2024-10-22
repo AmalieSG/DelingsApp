@@ -13,6 +13,7 @@ import com.gruppe2.delingsapp.ui.CameraActivity
 import com.gruppe2.delingsapp.ui.screens.*
 import com.gruppe2.delingsapp.ui.navigation.routes.NavbarRoutes
 import com.gruppe2.delingsapp.ui.navigation.routes.ScreenRoutes
+import com.gruppe2.delingsapp.ui.screens.Annonse.AnnonseScreen
 import com.gruppe2.delingsapp.ui.screens.productScreens.EditProductScreen
 import com.gruppe2.delingsapp.ui.screens.productScreens.ProductScreen
 //import com.example.myapplication.viewmodel.ProductViewModel
@@ -131,6 +132,11 @@ fun AppNavHost(
             composable("search?query={query}") { backStackEntry ->
                 val query = backStackEntry.arguments?.getString("query") ?: ""
                 SearchScreen(productViewModel = productViewModel, query = query)
+            }
+
+            composable(ScreenRoutes.Annonse.route) {   backStackEntry ->
+                val username = backStackEntry.arguments?.getString("username")
+                AnnonseScreen(username, userViewModel,navController)
             }
         }
 

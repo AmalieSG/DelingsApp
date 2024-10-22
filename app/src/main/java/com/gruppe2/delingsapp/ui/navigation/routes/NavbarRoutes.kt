@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class NavbarRoutes(val route: String, val title: String, val icon: ImageVector,val hasArgs: Boolean) {
     object Home : NavbarRoutes("home", "Home", Icons.Filled.Home,false)
     object Profile : NavbarRoutes("profile/{username}", "Profile", Icons.Filled.Person,true)
+    object Annonse : NavbarRoutes("annonse", "Annonse", Icons.Filled.Add,false) //asn
     object Login : NavbarRoutes("login", "Login", Icons.Filled.Add,false)
     object ownedProducts : NavbarRoutes("listProducts", "My Products", Icons.Filled.Info,false)
     object AddProduct : NavbarRoutes("addProduct", "AddProduct", Icons.Filled.Add,false)
