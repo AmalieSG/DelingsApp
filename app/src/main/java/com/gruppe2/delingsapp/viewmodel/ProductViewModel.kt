@@ -1,6 +1,5 @@
 package com.gruppe2.delingsapp.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -13,9 +12,9 @@ import java.time.LocalDateTime
 
 
 data class Reservation(
-    val renterId: String,
-    val startDateTime: LocalDateTime,
-    val endDateTime: LocalDateTime
+    val renterId: String = "",
+    val startDateTime: String = "",
+    val endDateTime: String  = "",
 
 )
 
@@ -26,6 +25,7 @@ data class Product(
     val price: Double = 0.0,
     val photos: List<String> = mutableListOf(),
     val location: String = "",
+    //val category: List<String> = mutableListOf(),
     val category: String = "",
     val reservations: List<Reservation> = mutableListOf()
 )
@@ -102,16 +102,7 @@ class ProductViewModel : ViewModel() {
         }
     }
 
-    // TODO: Slå sammen getAllPoducts og fetchAllProducts
-    suspend fun getAllProducts(): List<Product> {
-        return try {
-            val result = db.collection("Products").get().await()
-            result.toObjects(Product::class.java)
-        } catch (e: Exception) {
-            println("Feil ved henting av produkter: ${e.message}")
-            emptyList()
-        }
-    }
+
 
     fun fetchAllProducts() {
         db.collection("Products")
@@ -136,15 +127,15 @@ class ProductViewModel : ViewModel() {
         }
     }
 
-    fun isProductRented(product: Product?,desiredReservationTime:LocalDateTime): Boolean? {
+    fun isProductRented(product: Product?, desiredReservationTime: String): Boolean? {
         return product?.reservations?.any { reservation ->
-            desiredReservationTime.isAfter(reservation.startDateTime) && desiredReservationTime.isBefore(
-                reservation.endDateTime
+            LocalDateTime.parse(desiredReservationTime).isAfter(LocalDateTime.parse(reservation.startDateTime)) &&
+                    LocalDateTime.parse(desiredReservationTime).isBefore(LocalDateTime.parse(reservation.endDateTime)
             )
         }
     }
 
-   suspend fun reserveProduct(productName:String, renterId:String, startDateTime:LocalDateTime, endDateTime:LocalDateTime) : Boolean {
+   suspend fun reserveProduct(productName:String, renterId:String, startDateTime: String, endDateTime: String) : Boolean {
        val productId = getProductId(productName)
        if (productId != null) {
            val product = getProduct(productName)
@@ -154,7 +145,7 @@ class ProductViewModel : ViewModel() {
                if (isProductRented(it, startDateTime) == false) {
 
                    val updatedReservations = it.reservations.toMutableList().apply {
-                       add(Reservation(renterId, startDateTime, endDateTime))
+                       add(Reservation(renterId, startDateTime.toString(), endDateTime.toString()))
                    }
                    val updatedProduct = it.copy(reservations = updatedReservations)
 
@@ -172,7 +163,7 @@ class ProductViewModel : ViewModel() {
        return false
    }
 
-    suspend fun removeReservation(productName: String, renterId: String, startDateTime: LocalDateTime, endDateTime: LocalDateTime): Boolean {
+    suspend fun removeReservation(productName: String, renterId: String, startDateTime: String, endDateTime: String): Boolean {
         val productId = getProductId(productName)
         if (productId != null) {
             val product = getProduct(productName)
