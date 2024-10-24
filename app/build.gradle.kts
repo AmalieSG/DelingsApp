@@ -49,6 +49,16 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    /*secrets {
+        // Optionally specify a different file name containing your secrets.
+        // The plugin defaults to "local.properties"
+        propertiesFileName = "secrets.properties"
+
+        // A properties file containing default secret values. This file can be
+        // checked in version control.
+        defaultPropertiesFileName = "local.defaults.properties"
+    }*/
 }
 
 val camerax_version = "1.2.2"
@@ -68,6 +78,20 @@ dependencies {
     // Kotlin Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Google maps
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    // KTX for the Maps SDK for Android library
+    implementation("com.google.maps.android:maps-ktx:5.0.0")
+    // KTX for the Maps SDK for Android Utility Library
+    implementation("com.google.maps.android:maps-utils-ktx:5.0.0")
+    // Google Maps Compose library
+    val mapsComposeVersion = "4.4.1"
+    implementation("com.google.maps.android:maps-compose:$mapsComposeVersion")
+    // Google Maps Compose utility library
+    implementation("com.google.maps.android:maps-compose-utils:$mapsComposeVersion")
+    // Google Maps Compose widgets library
+    implementation("com.google.maps.android:maps-compose-widgets:$mapsComposeVersion")
 
     // Debugging tools for Compose
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
@@ -110,7 +134,7 @@ dependencies {
     implementation ("com.google.guava:guava:31.0.1-android")
     implementation ("androidx.activity:activity-compose:1.6.1")
     implementation ("androidx.compose.ui:ui:1.3.0")
-    implementation ("androidx.compose.material3:material3:1.0.0")
+    //implementation ("androidx.compose.material3:material3:1.0.0")
     implementation (libs.firebase.storage.ktx)
     implementation (libs.firebase.firestore.ktx)
 

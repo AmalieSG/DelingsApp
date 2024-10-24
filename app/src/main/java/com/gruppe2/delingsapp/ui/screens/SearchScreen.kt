@@ -9,6 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.rememberCameraPositionState
 import com.gruppe2.delingsapp.R
 import com.gruppe2.delingsapp.components.ProductList
 import com.gruppe2.delingsapp.ui.components.SearchBar
@@ -30,6 +35,9 @@ fun SearchScreen(
     val coroutineScope = rememberCoroutineScope()
     val searchQuery by searchViewModel.searchQuery.collectAsState()
     val filteredProducts by searchViewModel.filteredProducts.collectAsState()
+    val cameraPositionState = rememberCameraPositionState{
+        position = CameraPosition.fromLatLngZoom(LatLng(65.06, 25.47), 10f)
+    }
 
     LaunchedEffect(query) {
         productViewModel.fetchAllProducts()
@@ -55,15 +63,20 @@ fun SearchScreen(
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+            //contentAlignment = Alignment.TopCenter
         ) {
             if (filteredProducts.isNotEmpty()) {
                 // TODO: Bytt ut med Google Maps
-                Image(
+                /*Image(
                     painter = painterResource(id = R.drawable.map_background_image),
                     contentDescription = "Map Background",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
+                )*/
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    //properties = MapProperties(isMyLocationEnabled = true)
                 )
             }
 
